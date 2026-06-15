@@ -1157,5 +1157,9 @@ function init() {
   renderUI();
 }
 
-// Start application when DOM Content is loaded
-window.addEventListener('DOMContentLoaded', init);
+// Start application when DOM Content is loaded or immediately if already loaded
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
