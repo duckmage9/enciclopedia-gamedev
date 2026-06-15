@@ -49,17 +49,20 @@ let state = {
 function loadProgress() {
   try {
     const savedTutorials = localStorage.getItem('gamedev_tutorials');
-    state.visitedTutorials = savedTutorials ? JSON.parse(savedTutorials) : [];
+    const parsed = savedTutorials ? JSON.parse(savedTutorials) : [];
+    state.visitedTutorials = Array.isArray(parsed) ? parsed : [];
   } catch (e) { state.visitedTutorials = []; }
 
   try {
     const savedChallenges = localStorage.getItem('gamedev_challenges');
-    state.completedChallenges = savedChallenges ? JSON.parse(savedChallenges) : [];
+    const parsed = savedChallenges ? JSON.parse(savedChallenges) : [];
+    state.completedChallenges = Array.isArray(parsed) ? parsed : [];
   } catch (e) { state.completedChallenges = []; }
 
   try {
     const savedXp = localStorage.getItem('gamedev_xp');
-    state.xp = savedXp ? parseInt(savedXp, 10) : 0;
+    const parsed = savedXp ? parseInt(savedXp, 10) : 0;
+    state.xp = isNaN(parsed) ? 0 : parsed;
   } catch (e) { state.xp = 0; }
 }
 
@@ -149,8 +152,11 @@ function syncDefaultActiveItems() {
 function selectMainTab(newTab) {
   state.activeTab = newTab;
   state.searchQuery = '';
-  document.getElementById('search-input').value = '';
-  document.getElementById('search-input').placeholder = `Buscar na ${newTab === 'encyclopedia' ? 'enciclopédia' : 'lista de desafios'}...`;
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.placeholder = `Buscar na ${newTab === 'encyclopedia' ? 'enciclopédia' : 'lista de desafios'}...`;
+  }
   
   syncDefaultActiveItems();
   renderUI();
@@ -159,7 +165,10 @@ function selectMainTab(newTab) {
 function selectLanguageTab(lang) {
   state.selectedLanguage = lang;
   state.searchQuery = '';
-  document.getElementById('search-input').value = '';
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) {
+    searchInput.value = '';
+  }
   
   syncDefaultActiveItems();
   renderUI();
@@ -168,7 +177,10 @@ function selectLanguageTab(lang) {
 function selectDifficulty(diff) {
   state.selectedDifficulty = diff;
   state.searchQuery = '';
-  document.getElementById('search-input').value = '';
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) {
+    searchInput.value = '';
+  }
   
   syncDefaultActiveItems();
   renderUI();
@@ -177,10 +189,12 @@ function selectDifficulty(diff) {
 function handleSearch(query) {
   state.searchQuery = query;
   const clearBtn = document.getElementById('clear-search-btn');
-  if (query) {
-    clearBtn.classList.remove('hidden');
-  } else {
-    clearBtn.classList.add('hidden');
+  if (clearBtn) {
+    if (query) {
+      clearBtn.classList.remove('hidden');
+    } else {
+      clearBtn.classList.add('hidden');
+    }
   }
   
   syncDefaultActiveItems();
@@ -310,12 +324,13 @@ function renderListSidebar() {
   const countSpan = document.getElementById('results-count');
   const listContainer = document.getElementById('items-list');
 
+  if (!listContainer) return;
   listContainer.innerHTML = '';
 
   if (state.activeTab === 'encyclopedia') {
-    sidebarTitle.textContent = 'Tópicos de Estudo';
+    if (sidebarTitle) sidebarTitle.textContent = 'Tópicos de Estudo';
     const lessons = getFilteredLessons();
-    countSpan.textContent = `${lessons.length} Encontrado(s)`;
+    if (countSpan) countSpan.textContent = `${lessons.length} Encontrado(s)`;
 
     if (lessons.length === 0) {
       listContainer.innerHTML = `
@@ -371,9 +386,9 @@ function renderListSidebar() {
 
   } else {
     // Render Challenges List Sidebar
-    sidebarTitle.textContent = 'Desafios Ativos';
+    if (sidebarTitle) sidebarTitle.textContent = 'Desafios Ativos';
     const challenges = getFilteredChallenges();
-    countSpan.textContent = `${challenges.length} Encontrado(s)`;
+    if (countSpan) countSpan.textContent = `${challenges.length} Encontrado(s)`;
 
     if (challenges.length === 0) {
       listContainer.innerHTML = `
@@ -1038,30 +1053,37 @@ function syncCreatorTab() {
   const dochintInput = document.getElementById('creator-dochint-input');
 
   if (isLesson) {
-    btnLesson.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer bg-white/10 text-indigo-400';
-    btnChall.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer text-slate-500';
-    labelTimeXp.textContent = 'Tempo Estimado (ex: "12 min"):';
-    timexpInput.placeholder = '12 min';
-    labelDocHint.textContent = 'Apostila Completa em Texto (html/markdown):';
-    dochintInput.placeholder = 'Detalhes aprofundados para o aluno ler...';
+    if (btnLesson) btnLesson.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer bg-white/10 text-indigo-400';
+    if (btnChall) btnChall.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer text-slate-500';
+    if (labelTimeXp) labelTimeXp.textContent = 'Tempo Estimado (ex: "12 min"):';
+    if (timexpInput) timexpInput.placeholder = '12 min';
+    if (labelDocHint) labelDocHint.textContent = 'Apostila Completa em Texto (html/markdown):';
+    if (dochintInput) dochintInput.placeholder = 'Detalhes aprofundados para o aluno ler...';
   } else {
-    btnChall.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer bg-white/10 text-indigo-400';
-    btnLesson.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer text-slate-500';
-    labelTimeXp.textContent = 'Recompensa (XP):';
-    timexpInput.placeholder = '300';
-    labelDocHint.textContent = 'Instruções para Resolução & Dicas:';
-    dochintInput.placeholder = 'O que o usuário deve escrever no editor?';
+    if (btnChall) btnChall.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer bg-white/10 text-indigo-400';
+    if (btnLesson) btnLesson.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer text-slate-500';
+    if (labelTimeXp) labelTimeXp.textContent = 'Recompensa (XP):';
+    if (timexpInput) timexpInput.placeholder = '300';
+    if (labelDocHint) labelDocHint.textContent = 'Instruções para Resolução & Dicas:';
+    if (dochintInput) dochintInput.placeholder = 'O que o usuário deve escrever no editor?';
   }
   generateAndDisplayJSON();
 }
 
 function generateAndDisplayJSON() {
   const isLesson = state.creatorTab === 'lesson';
-  const title = document.getElementById('creator-title-input').value;
-  const val = document.getElementById('creator-timexp-input').value;
-  const desc = document.getElementById('creator-desc-input').value;
-  const code = document.getElementById('creator-code-input').value;
-  const docHint = document.getElementById('creator-dochint-input').value;
+  
+  const titleEl = document.getElementById('creator-title-input');
+  const timexpEl = document.getElementById('creator-timexp-input');
+  const descEl = document.getElementById('creator-desc-input');
+  const codeEl = document.getElementById('creator-code-input');
+  const dochintEl = document.getElementById('creator-dochint-input');
+
+  const title = titleEl ? titleEl.value : '';
+  const val = timexpEl ? timexpEl.value : '';
+  const desc = descEl ? descEl.value : '';
+  const code = codeEl ? codeEl.value : '';
+  const docHint = dochintEl ? dochintEl.value : '';
 
   if (isLesson) {
     const obj = {
@@ -1093,7 +1115,10 @@ function generateAndDisplayJSON() {
     state.generatedJSON = JSON.stringify(obj, null, 2);
   }
 
-  document.getElementById('json-output').textContent = state.generatedJSON;
+  const jsonOutput = document.getElementById('json-output');
+  if (jsonOutput) {
+    jsonOutput.textContent = state.generatedJSON;
+  }
 }
 
 // --- INITIALIZATION ---
