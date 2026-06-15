@@ -222,60 +222,77 @@ function runChallengeTests() {
 
 // --- RENDERING SUBSYSTEMS ---
 function renderUI() {
+  const trySetText = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+
   // Update Gamified Stat Bar text values
   const currentLvl = Math.floor(state.xp / 1000) + 1;
-  document.getElementById('level-badge').textContent = currentLvl;
-  document.getElementById('level-num').textContent = currentLvl;
-  document.getElementById('xp-text').textContent = `${state.xp} XP`;
+  trySetText('level-badge', currentLvl);
+  trySetText('level-num', currentLvl);
+  trySetText('xp-text', `${state.xp} XP`);
   
   // Theory & Challenge counts
-  document.getElementById('theory-completed').textContent = `${state.visitedTutorials.length} / 11`;
-  document.getElementById('challenges-completed').textContent = `${state.completedChallenges.length} / 9`;
+  trySetText('theory-completed', `${state.visitedTutorials.length} / 11`);
+  trySetText('challenges-completed', `${state.completedChallenges.length} / 9`);
   
   // Progress Line Percent
   const percent = Math.min(100, (state.xp % 1000) / 10);
-  document.getElementById('xp-progress-bar').style.width = `${percent}%`;
+  const progressBar = document.getElementById('xp-progress-bar');
+  if (progressBar) progressBar.style.width = `${percent}%`;
 
   // Render navigation states (active tab highlighted borders)
   const tabEnc = document.getElementById('tab-encyclopedia');
   const tabChall = document.getElementById('tab-challenges');
-  if (state.activeTab === 'encyclopedia') {
-    tabEnc.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer bg-white/5 text-white shadow-inner border-b-2 border-indigo-500';
-    tabChall.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer text-slate-400 hover:text-white hover:bg-[#16161D]/50';
-  } else {
-    tabChall.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer bg-white/5 text-white shadow-inner border-b-2 border-indigo-500';
-    tabEnc.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer text-slate-400 hover:text-white hover:bg-[#16161D]/50';
+  if (tabEnc && tabChall) {
+    if (state.activeTab === 'encyclopedia') {
+      tabEnc.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer bg-white/5 text-white shadow-inner border-b-2 border-indigo-500';
+      tabChall.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer text-slate-400 hover:text-white hover:bg-[#16161D]/50';
+    } else {
+      tabChall.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer bg-white/5 text-white shadow-inner border-b-2 border-indigo-500';
+      tabEnc.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer text-slate-400 hover:text-white hover:bg-[#16161D]/50';
+    }
   }
 
   // Render subtabs (HTML, CSS, JS active/inactive visual status states)
   ['html', 'css', 'js'].forEach(lang => {
     const elem = document.getElementById(`subtab-${lang}`);
     const pingEl = document.getElementById(`ping-${lang}`);
-    if (state.selectedLanguage === lang) {
-      elem.className = 'p-3 md:p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer relative group overflow-hidden border-indigo-500 bg-indigo-600/15 text-indigo-300 shadow-lg shadow-black/50 ring-1 ring-white/10';
-      pingEl.classList.remove('hidden');
-      pingEl.classList.add('inline-block', 'animate-ping');
-    } else {
-      elem.className = 'p-3 md:p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer relative group overflow-hidden border-white/10 bg-[#0F0F12] text-slate-400 hover:text-slate-200 hover:border-indigo-500/40';
-      pingEl.classList.add('hidden');
-      pingEl.classList.remove('inline-block', 'animate-ping');
+    if (elem) {
+      if (state.selectedLanguage === lang) {
+        elem.className = 'p-3 md:p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer relative group overflow-hidden border-indigo-500 bg-indigo-600/15 text-indigo-300 shadow-lg shadow-black/50 ring-1 ring-white/10';
+        if (pingEl) {
+          pingEl.classList.remove('hidden');
+          pingEl.classList.add('inline-block', 'animate-ping');
+        }
+      } else {
+        elem.className = 'p-3 md:p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer relative group overflow-hidden border-white/10 bg-[#0F0F12] text-slate-400 hover:text-slate-200 hover:border-indigo-500/40';
+        if (pingEl) {
+          pingEl.classList.add('hidden');
+          pingEl.classList.remove('inline-block', 'animate-ping');
+        }
+      }
     }
   });
 
   // Render active difficulty select buttons
   ['beginner', 'intermediate', 'advanced'].forEach(d => {
     const btn = document.getElementById(`diff-btn-${d}`);
-    if (state.selectedDifficulty === d) {
-      btn.className = 'flex-1 md:flex-none justify-center px-4 py-1.5 rounded transition-all text-xs font-mono font-semibold flex items-center gap-2 cursor-pointer bg-indigo-600 text-white shadow-md border border-indigo-500/40';
-    } else {
-      btn.className = 'flex-1 md:flex-none justify-center px-4 py-1.5 rounded transition-all text-xs font-mono font-semibold flex items-center gap-2 cursor-pointer text-slate-400 hover:text-white';
+    if (btn) {
+      if (state.selectedDifficulty === d) {
+        btn.className = 'flex-1 md:flex-none justify-center px-4 py-1.5 rounded transition-all text-xs font-mono font-semibold flex items-center gap-2 cursor-pointer bg-indigo-600 text-white shadow-md border border-indigo-500/40';
+      } else {
+        btn.className = 'flex-1 md:flex-none justify-center px-4 py-1.5 rounded transition-all text-xs font-mono font-semibold flex items-center gap-2 cursor-pointer text-slate-400 hover:text-white';
+      }
     }
   });
 
   // Filter labels
-  document.getElementById('label-lang-filter').textContent = state.selectedLanguage.toUpperCase();
+  const langFilterEl = document.getElementById('label-lang-filter');
+  if (langFilterEl) langFilterEl.textContent = state.selectedLanguage.toUpperCase();
   const diffWord = state.selectedDifficulty === 'beginner' ? 'Iniciante' : state.selectedDifficulty === 'intermediate' ? 'Intermediário' : 'Avançado';
-  document.getElementById('label-diff-filter').textContent = diffWord;
+  trySetText('label-diff-filter', diffWord);
 
   // Render Sidebar, Details sections
   renderListSidebar();
@@ -1084,71 +1101,95 @@ function init() {
   console.log('🎮 [GameDEV Base v1.1] Inicializando a enciclopédia...');
   loadProgress();
 
+  // Helper functions for safe event binding
+  const safeOnClick = (id, callback) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.onclick = callback;
+    } else {
+      console.warn(`Element with ID '${id}' not found for click binding.`);
+    }
+  };
+
+  const safeAddEvent = (id, event, callback) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener(event, callback);
+    } else {
+      console.warn(`Element with ID '${id}' not found for event '${event}'.`);
+    }
+  };
+
   // Bind Main Search Bar
-  const searchInput = document.getElementById('search-input');
-  searchInput.addEventListener('input', (e) => {
+  safeAddEvent('search-input', 'input', (e) => {
     handleSearch(e.target.value);
   });
 
-  const clearSearchBtn = document.getElementById('clear-search-btn');
-  clearSearchBtn.addEventListener('click', () => {
-    searchInput.value = '';
+  safeAddEvent('clear-search-btn', 'click', () => {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) searchInput.value = '';
     handleSearch('');
   });
 
   // Bind main navigation tabs
-  document.getElementById('tab-encyclopedia').onclick = () => selectMainTab('encyclopedia');
-  document.getElementById('tab-challenges').onclick = () => selectMainTab('challenges');
+  safeOnClick('tab-encyclopedia', () => selectMainTab('encyclopedia'));
+  safeOnClick('tab-challenges', () => selectMainTab('challenges'));
 
   // Bind subtabs language selectors
   ['html', 'css', 'js'].forEach(lang => {
-    document.getElementById(`subtab-${lang}`).onclick = () => selectLanguageTab(lang);
+    safeOnClick(`subtab-${lang}`, () => selectLanguageTab(lang));
   });
 
   // Bind difficulty selectors
   ['beginner', 'intermediate', 'advanced'].forEach(d => {
-    document.getElementById(`diff-btn-${d}`).onclick = () => selectDifficulty(d);
+    safeOnClick(`diff-btn-${d}`, () => selectDifficulty(d));
   });
 
   // Bind Content Creator Modal Triggers
   const modal = document.getElementById('creator-modal');
-  document.getElementById('dev-export-btn').onclick = () => {
-    modal.classList.remove('hidden');
-    state.showCreator = true;
-    syncCreatorTab();
-  };
+  safeOnClick('dev-export-btn', () => {
+    if (modal) {
+      modal.classList.remove('hidden');
+      state.showCreator = true;
+      syncCreatorTab();
+    }
+  });
 
   const closeModal = () => {
-    modal.classList.add('hidden');
-    state.showCreator = false;
+    if (modal) {
+      modal.classList.add('hidden');
+      state.showCreator = false;
+    }
   };
-  document.getElementById('close-creator-btn').onclick = closeModal;
-  document.getElementById('close-modal-footer-btn').onclick = closeModal;
+  safeOnClick('close-creator-btn', closeModal);
+  safeOnClick('close-modal-footer-btn', closeModal);
 
   // Toggles inside creator modal
-  document.getElementById('toggle-creator-lesson').onclick = () => {
+  safeOnClick('toggle-creator-lesson', () => {
     state.creatorTab = 'lesson';
     syncCreatorTab();
-  };
-  document.getElementById('toggle-creator-challenge').onclick = () => {
+  });
+  safeOnClick('toggle-creator-challenge', () => {
     state.creatorTab = 'challenge';
     syncCreatorTab();
-  };
+  });
 
   // Generate output live in creator modal
-  document.getElementById('generate-json-btn').onclick = generateAndDisplayJSON;
+  safeOnClick('generate-json-btn', generateAndDisplayJSON);
 
   // Copy JSON inside creator modal
-  document.getElementById('copy-json-btn').onclick = () => {
+  safeOnClick('copy-json-btn', () => {
     if (!state.generatedJSON) return;
     navigator.clipboard.writeText(state.generatedJSON);
     
     const label = document.getElementById('copy-json-text');
-    label.textContent = 'Copiado!';
-    setTimeout(() => {
-      label.textContent = 'Copiar JSON';
-    }, 2000);
-  };
+    if (label) {
+      label.textContent = 'Copiado!';
+      setTimeout(() => {
+        label.textContent = 'Copiar JSON';
+      }, 2000);
+    }
+  });
 
   // Start continuous frame runner for looping demos
   animationFrameId = requestAnimationFrame(runGameLoopTimer);
