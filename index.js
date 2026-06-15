@@ -4,7 +4,6 @@
  */
 
 // --- DATASET: GameDEV Encyclopedia & Challenges ---
-import './index.css';
 import { ENCYCLOPEDIA_DATA, CHALLENGE_DATA } from './conteudos.js';
 
 // --- CORE APP STATE ---
