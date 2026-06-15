@@ -1081,6 +1081,7 @@ function generateAndDisplayJSON() {
 
 // --- INITIALIZATION ---
 function init() {
+  console.log('🎮 [GameDEV Base v1.1] Inicializando a enciclopédia...');
   loadProgress();
 
   // Bind Main Search Bar
