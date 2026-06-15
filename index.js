@@ -1,1 +1,1595 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
+// --- DATASET: GameDEV Encyclopedia & Challenges ---
+const ENCYCLOPEDIA_DATA = {
+  html: [
+    {
+      id: 'html-beg-canvas',
+      title: 'O Elemento <canvas>',
+      shortDesc: 'A tela em branco pixelada onde toda a mágica dos jogos 2D acontece no seu navegador.',
+      difficulty: 'beginner',
+      estimatedTime: '8 min',
+      icon: 'tv',
+      concept: 'Atua como a tela física onde o JavaScript desenha retângulos, sprites, caminhos e imagens a cada frame do seu jogo.',
+      codeExample: `<canvas id="game-canvas" width="800" height="600">\n  Seu navegador não suporta a tag Canvas.\n</canvas>`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { width: 400, height: 200 }
+      },
+      tutorialHTML: `O elemento HTML5 &lt;canvas&gt; é a base para quase todos os motores de jogos baseados na web (como Phaser ou PixiJS). Diferente de elementos HTML comuns que usam árvore DOM para posicionação individual, o Canvas é uma única caixa de pixels onde desenhamos programaticamente.\n\nPrincipais atributos:\n- **width**: Largura da tela em pixels.\n- **height**: Altura da tela em pixels.\n\nDica importante: Sempre defina os atributos width e height diretamente na tag HTML ou via propriedade JavaScript, e evite esticá-los usando CSS simples, pois isso causaria distorção e embaçamento de pixels no seu jogo!`
+    },
+    {
+      id: 'html-beg-images',
+      title: 'Estruturação de Sprites e Imagens',
+      shortDesc: 'Como declarar e preparar as imagens (Assets) de fundo e das suas personagens no HTML.',
+      difficulty: 'beginner',
+      estimatedTime: '5 min',
+      icon: 'image',
+      concept: 'Uso de tags <img> dentro de um container oculto para garantir o pré-carregamento de Spritesheets antes do jogo iniciar.',
+      codeExample: `<div id="asset-loader" style="display: none;">\n  <img id="player-spritesheet" src="sprites/hero_run.png" />\n  <img id="background-level1" src="backgrounds/sky.png" />\n</div>`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { drawSprite: true }
+      },
+      tutorialHTML: `Antes de desenhar qualquer coisa no Canvas, o navegador precisa ter a imagem carregada na memória do sistema. \n\nSe tentarmos desenhar uma imagem imediatamente sem verificar se ela terminou de baixar, o canvas resultará em branco ou apresentará erros de renderização intermitentes.\n\nFormas comuns de carregar:\n1. Declarando no HTML com display: none para que carregue com o resto da página.\n2. Criando instâncias de Image() dinamicamente via JavaScript.`
+    },
+    {
+      id: 'html-beg-hud',
+      title: 'UI e Elementos de HUD',
+      shortDesc: 'Criando menus de jogo nativos e indicadores de vida usando elementos HTML comuns.',
+      difficulty: 'beginner',
+      estimatedTime: '6 min',
+      icon: 'compass',
+      concept: 'Sobrepor elementos HTML convencionais (como botões e textos) em cima do canvas para facilitar a criação de menus rápidos.',
+      codeExample: `<div id="game-container" class="relative">\n  <canvas id="game-canvas"></canvas>\n  \n  <!-- Interface HUD em cima do jogo -->\n  <div class="absolute top-4 left-4 text-white">\n    <span>Score: 00000</span>\n  </div>\n</div>`,
+      liveDemoConfig: {
+        type: 'healthbar',
+        params: { initialLife: 100 }
+      },
+      tutorialHTML: `Muitos desenvolvedores iniciantes tentam desenhar menus complexos, campos de texto e pontuações inteiramente com comandos de desenho no Canvas. Isso é trabalhoso e ineficiente.\n\nA melhor técnica é sobrepor elementos HTML normais utilizando CSS posicionado de forma absoluta sobre a tag &lt;canvas&gt;. O HTML cuida dos formulários, botões de retroalimentação e acessibilidade de maneira nativa e responsiva.`
+    },
+    {
+      id: 'html-int-data',
+      title: 'Data Attributes para Game Entities',
+      shortDesc: 'Aproveitando o padrão de dados customizados do HTML para gerenciar IDs de entidades.',
+      difficulty: 'intermediate',
+      estimatedTime: '10 min',
+      icon: 'database',
+      concept: 'Usar data-* tags HTML para configurar valores primários de monstros, inimigos e caixas de recompensa na UI.',
+      codeExample: `<button class="skill-btn" data-damage="50" data-cooldown="3">\n  Bola de Fogo\n</button>`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { useDataAttr: true }
+      },
+      tutorialHTML: `Os atributos customizados "data-*" fornecem uma maneira simples e padronizada de associar dados a tags HTML sem a necessidade de queries complexas.\n\nAo estruturar barras de atalho de habilidades (skills) ou inventários, você pode armazenar taxas de resfriamento (cooldown), consumo de mana ou poder de cura diretamente nas tags. O JavaScript lerá esses metadados via element.dataset.`
+    },
+    {
+      id: 'html-int-audio',
+      title: 'Controle de Áudio Nativo',
+      shortDesc: 'Incluindo efeitos sonoros (<audio>) e controlando triggers via triggers HTML.',
+      difficulty: 'intermediate',
+      estimatedTime: '8 min',
+      icon: 'music',
+      concept: 'Manipular a tag nativa de áudio para música de fundo em loop e disparos rápidos de barulhos de tiro ou moedas.',
+      codeExample: `<audio id="bgm-level1" loop preload="auto">\n  <source src="bgm.mp3" type="audio/mpeg">\n</audio>`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { audioTrigger: true }
+      },
+      tutorialHTML: `Adicionar efeitos sonoros e música de fundo eleva drasticamente a imersão de qualquer jogo. O HTML5 nos possibilita declarar trilhas sonoras leves com tags nativas de áudio.\n\nPara efeitos de curtíssimo atraso (latência zero) como tiros ou colisões, a Web Audio API do JavaScript é preferida, mas para música de menu ou de fundo, a tag &lt;audio&gt; clássica com controle de reprodução nativo é extremamente rápida e consome muito menos RAM.`
+    },
+    {
+      id: 'html-adv-sandbox',
+      title: 'Precarregadores Dinâmicos de Canvas',
+      shortDesc: 'Gerenciando renderizadores múltiplos e threads com Canvas no Web Worker.',
+      difficulty: 'advanced',
+      estimatedTime: '15 min',
+      icon: 'shield-alert',
+      concept: 'Transferir o controle do renderizador de pixels do jogo principal para um Worker rodando em plano paralelo.',
+      codeExample: `const offscreenCanvas = canvas.transferControlToOffscreen();\nconst worker = new Worker('game-worker.js');\nworker.postMessage({ canvas: offscreenCanvas }, [offscreenCanvas]);`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { offscreenText: 'Canvas Offscreen Ativo' }
+      },
+      tutorialHTML: `Quando jogos de navegador escalam, os cálculos pesados de IA, de física e o looping de render começam a travar a interface do usuário (lag na rolagem da página). \n\nUtilizando o OffscreenCanvas, conseguimos deslocar toda a manipulação de pixels e pintura para um script paralelo (Web Worker). Assim, o jogo flui a estáveis 60 FPS mesmo se a página principal houver scripts complexos em andamento!`
+    }
+  ],
+  css: [
+    {
+      id: 'css-beg-flex',
+      title: 'Centralização Perfeita de Arena',
+      shortDesc: 'Como enquadrar a arena do seu jogo independente das telas ou telas de dispositivos móveis do usuário.',
+      difficulty: 'beginner',
+      estimatedTime: '4 min',
+      icon: 'layout-grid',
+      concept: 'Usar as flexbox properties para garantir que o contêiner do jogo esteja perfeitamente centralizado vertical de horizontalmente.',
+      codeExample: `.game-viewport {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  min-height: 100vh;\n  background-color: #0f172a;\n}`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { outlineScreen: true }
+      },
+      tutorialHTML: `Muitos jogos em Web perdem engajamento logo no início porque ficam deformados ou desalinhados dependendo do monitor. Usar Flexbox ou Grid na seção principal da sua página garante enquadramento perfeito em qualquer dispositivo móvel ou PC de última geração.`
+    },
+    {
+      id: 'css-beg-cursor',
+      title: 'Cursores de Jogo Pixilados',
+      shortDesc: 'Aumente a imersão criando ponteiros e mira customizadas com imagens do tema do seu jogo.',
+      difficulty: 'beginner',
+      estimatedTime: '5 min',
+      icon: 'mouse-pointer',
+      concept: 'Sobrescrever o ponteiro do cursor do SO comum por uma imagem inline .png ou .cur estilizada com estética pixel art.',
+      codeExample: `.custom-cursor-area {\n  cursor: url('assets/cursor_mira.png') 16 16, auto;\n}`,
+      liveDemoConfig: {
+        type: 'css-cursor',
+        params: {}
+      },
+      tutorialHTML: `Um detalhe muito bacana presente nos melhores jogos é o cursor do mouse customizado. Na CSS, você pode declarar uma imagem customizada para o estado de mira, alvo ativo, ou interações simples com botões de upgrade.`
+    },
+    {
+      id: 'css-int-spritesheets',
+      title: 'Animação de Sprite com Steps',
+      shortDesc: 'Criando animações fluidas de spritesheets no navegador usando apenas propriedades de animação do CSS.',
+      difficulty: 'intermediate',
+      estimatedTime: '10 min',
+      icon: 'rotate-cw',
+      concept: 'Usar animation-timing-function com a função steps() para fatiar e avançar frames em posições específicas da imagem.',
+      codeExample: `.player-walk {\n  width: 64px;\n  height: 64px;\n  background-image: url('player_sprites.png');\n  animation: walkCycle 0.8s steps(8) infinite;\n}\n\n@keyframes walkCycle {\n  from { background-position: 0px 0px; }\n  to { background-position: -512px 0px; }\n}`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { animateSprite: true }
+      },
+      tutorialHTML: `Às vezes não é necessário inflar o Canvas para animar pequenas entidades decorativas no menu do seu jogo (por exemplo, moedas girando ou brasas flutuando). \n\nA propriedade steps(X) permite que o CSS avance de frame em frame descontínuo em vez de realizar uma transição suave, gerando uma fidelidade perfeita de animação pixel-art com zero custo de processamento JS!`
+    },
+    {
+      id: 'css-int-shake',
+      title: 'Efeito Screen Shake com CSS',
+      shortDesc: 'Crie impactos violentos e feedbacks de pancadas movimentando a câmera inteira de forma dinâmica.',
+      difficulty: 'intermediate',
+      estimatedTime: '7 min',
+      icon: 'flame',
+      concept: 'Um conjunto de keyframes rápidos que deslocam ligeiramente as coordenadas de margem ou translação do contêiner.',
+      codeExample: `@keyframes shake {\n  0% { transform: translate(1px, 1px) rotate(0deg); }\n  10% { transform: translate(-1px, -2px) rotate(-1deg); }\n  30% { transform: translate(-3px, 0px) rotate(1deg); }\n  50% { transform: translate(1px, 2px) rotate(0deg); }\n  100% { transform: translate(1px, 1px) rotate(0deg); }\n}\n.shake {\n  animation: shake 0.3s linear;\n}`,
+      liveDemoConfig: {
+        type: 'shake',
+        params: {}
+      },
+      tutorialHTML: `O "Screen Shake" é um dos melhores recursos de "Juice" (detalhes cosméticos de polimento) nos jogos. Ele gera uma resposta de impacto em combates. Basta adicionar uma classe temporária ao contêiner HTML do seu canvas toda vez que o herói tomar dano!`
+    },
+    {
+      id: 'css-adv-crt',
+      title: 'Filtro de Tela Retrô CRT',
+      shortDesc: 'Transforme o visual do seu jogo pixel art em um fliperama clássico dos anos 80.',
+      difficulty: 'advanced',
+      estimatedTime: '12 min',
+      icon: 'tv',
+      concept: 'Aplicar uma camada semitransparente sobreposta com gradiente repetido e brilho animado de varredura.',
+      codeExample: `.crt-overlay {\n  pointer-events: none;\n  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));\n  background-size: 100% 4px, 6px 100%;\n}`,
+      liveDemoConfig: {
+        type: 'scanlines',
+        params: {}
+      },
+      tutorialHTML: `Para jogos de estilo retro/indie, recriar a textura de antigas telas de fósforo coloridas adiciona um charme estético incrível sem sobrecarregar a GPU. Com misturas de filtros de blend-mode podemos aplicar essa camada acima do Canvas principal.`
+    },
+    {
+      id: 'css-adv-lighting',
+      title: 'Iluminação Dinâmica Baseada em CSS Variables',
+      shortDesc: 'Crie luzes dinâmicas de lanternas que seguem o ponteiro do mouse usando gradientes radiais acoplados.',
+      difficulty: 'advanced',
+      estimatedTime: '14 min',
+      icon: 'sun',
+      concept: 'Mecanismo de atualizar variáveis CSS customizadas (--light-x, --light-y) no JavaScript e desenhá-las em tempo de execução.',
+      codeExample: `<div class="ambient-darkness" style="background: radial-gradient(circle 120px at var(--light-x) var(--light-y), transparent 100%, rgba(0,0,0,0.85) 100%);">\n</div>`,
+      liveDemoConfig: {
+        type: 'lights',
+        params: {}
+      },
+      tutorialHTML: `Jogos de terror ou masmorra se beneficiam muito de iluminação dinâmica. Ao combinar manipulação leve de eventos de passagem do cursor em JS com variáveis CSS, você consegue iluminar seções pretas suavemente criando efeitos realistas de fog-of-war.`
+    }
+  ],
+  js: [
+    {
+      id: 'js-beg-loop',
+      title: 'A Game Loop Essencial',
+      shortDesc: 'Os alicerces de qualquer frame: atualizar a física de redesenhar os pixels constantemente.',
+      difficulty: 'beginner',
+      estimatedTime: '9 min',
+      icon: 'activity',
+      concept: 'Utilizar o requestAnimationFrame para estabelecer conexões com a taxa de atualização física da tela do usuário.',
+      codeExample: `function gameLoop(timestamp) {\n  atualizarFisica();\n  desenharRender();\n  \n  requestAnimationFrame(gameLoop);\n}\nrequestAnimationFrame(gameLoop);`,
+      liveDemoConfig: {
+        type: 'gameloop',
+        params: { status: 'Ativa' }
+      },
+      tutorialHTML: `Diferente de sistemas Web orientados a eventos (que só reagem quando o usuário digita ou clica), jogos são sistemas reativos contínuos. Eles precisam executar de 30 a 120 vezes por segundo para realizar checks de gravidade, posição e colisões de forma orgânica.`
+    },
+    {
+      id: 'js-beg-movement',
+      title: 'Movimentos de Entidades',
+      shortDesc: 'Registrando e-mails de teclado e controlando a aceleração das coordenadas X e Y.',
+      difficulty: 'beginner',
+      estimatedTime: '7 min',
+      icon: 'compass',
+      concept: 'Criar um dicionário indexando chaves lidas das teclas pressionadas e incrementando valores de deslocamento.',
+      codeExample: `const teclas = {};\nwindow.addEventListener('keydown', e => teclas[e.key] = true);\nwindow.addEventListener('keyup', e => teclas[e.key] = false);\n\nfunction update() {\n  if (teclas['ArrowRight']) player.x += player.vel;\n  if (teclas['ArrowLeft']) player.x -= player.vel;\n}`,
+      liveDemoConfig: {
+        type: 'movement',
+        params: {}
+      },
+      tutorialHTML: `Para mover um objeto de jogo clássico, você precisará monitorar continuamente a caixa de comandos digitados (geralmente WASD ou as setas direcionais), alterando os vetores de velocidade que determinam onde o ator principal deve desenhar a seguir.`
+    },
+    {
+      id: 'js-int-aabb',
+      title: 'Colisões Reais Retangulares (AABB)',
+      shortDesc: 'Faça seus projéteis e paredes colidirem de verdade usando matemática prática simples.',
+      difficulty: 'intermediate',
+      estimatedTime: '12 min',
+      icon: 'shield',
+      concept: 'Axis-Aligned Bounding Box (AABB): uma checagem simples de faixas espaciais de overlapping entre dois corpos.',
+      codeExample: `function checaColisao(rect1, rect2) {\n  return rect1.x < rect2.x + rect2.w &&\n         rect1.x + rect1.w > rect2.x &&\n         rect1.y < rect2.y + rect2.h &&\n         rect1.y + rect1.h > rect2.y;\n}`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { showAABBDemo: true }
+      },
+      tutorialHTML: `O colisor de retângulos (AABB) é o algoritmo mais performático para iniciar jogos de plataforma ou tiro. Ele decide instantaneamente se as extremidades do herói encostaram nos limites de algum obstáculo ou se uma bala atingiu o monstro!`
+    },
+    {
+      id: 'js-adv-physics',
+      title: 'Física de Plataforma Avançada',
+      shortDesc: 'A matemática por trás de saltos, gravidade realista, aceleração elástica e frenagem.',
+      difficulty: 'advanced',
+      estimatedTime: '18 min',
+      icon: 'boxes',
+      concept: 'Cálculo vetorial básico aplicando vetores de resistência, atrito de solo, ar e empuxo de salto vertical.',
+      codeExample: `player.vy += player.gravidade; // aplica gravidade\nplayer.x += player.vx;\nplayer.y += player.vy;\nplayer.vx *= player.atrito; // reduz velocidade lateral`,
+      liveDemoConfig: {
+        type: 'canvas',
+        params: { platformPhysics: true }
+      },
+      tutorialHTML: `Para fazer um jogo de plataforma clássico parecer natural, aplicar pulos elásticos requer aplicar gravidade acumulada e fricções de vento. Com pequenos coeficientes de amortecimento físico, você ganha movimentos incrivelmente orgânicos!`
+    }
+  ]
+};
+
+const CHALLENGE_DATA = [
+  {
+    id: 'ch-html-canvas',
+    title: 'A Grande Tela (Canvas)',
+    shortDesc: 'Declare o palco onde seu jogo vai renderizar.',
+    difficulty: 'beginner',
+    category: 'html',
+    xpValue: 150,
+    instructions: 'Escreva a declaração de uma tag <canvas> contendo o ID "tela-jogo" com a largura (width) igual a 800 e a altura (height) igual a 600.',
+    initialCode: '<!-- Escreva aqui sua tag canvas -->\n',
+    expectedKeywords: ['<canvas', 'id="tela-jogo"', 'width="800"', 'height="600"'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase().replace(/\s+/g, ' ');
+      if (!clean.includes('id="tela-jogo"') && !clean.includes("id='tela-jogo'")) {
+        return { success: false, message: 'Falta o ID correto: id="tela-jogo"' };
+      }
+      if (!clean.includes('width="800"') && !clean.includes("width='800'") && !clean.includes('width=800')) {
+        return { success: false, message: 'Falta a largura correta: width="800"' };
+      }
+      if (!clean.includes('height="600"') && !clean.includes("height='600'") && !clean.includes('height=600')) {
+        return { success: false, message: 'Falta a altura correta: height="600"' };
+      }
+      if (!clean.includes('</canvas>')) {
+        return { success: false, message: 'Não se esqueça de fechar a tag com </canvas>!' };
+      }
+      return { success: true, message: 'Uau! Palco criado com sucesso, agora você já pode carregar imagens e sprites nele!' };
+    },
+    hint: 'A sintaxe deve ser parecida com: <canvas id="tela-jogo" width="800" height="600"></canvas>'
+  },
+  {
+    id: 'ch-html-sound',
+    title: 'Trilha Sonora Ativa',
+    shortDesc: 'Prepare a trilha de background do seu jogo.',
+    difficulty: 'intermediate',
+    category: 'html',
+    xpValue: 200,
+    instructions: 'Declare uma tag <audio> com os parâmetros booleanos para que fique em loop infinito ("loop") e seja carregada de forma antecipada automaticamente ("preload"). Use o ID "som-fundo".',
+    initialCode: '<!-- Insira sua tag de áudio aqui -->\n',
+    expectedKeywords: ['<audio', 'id="som-fundo"', 'loop', 'preload'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase();
+      if (!clean.includes('id="som-fundo"')) return { success: false, message: 'Falta o ID correto: id="som-fundo"' };
+      if (!clean.includes('loop')) return { success: false, message: 'Falta o atributo de repetição contínua: loop' };
+      if (!clean.includes('preload')) return { success: false, message: 'Falta o atributo para pré-carregamento: preload' };
+      return { success: true, message: 'Incrível! Sua música de fundo vai iniciar instantaneamente sem engasgos!' };
+    },
+    hint: 'Use: <audio id="som-fundo" loop preload="auto"></audio>'
+  },
+  {
+    id: 'ch-html-offscreen',
+    title: 'Canvas em Threads Separadas',
+    shortDesc: 'Apresente o método de desvincular o render do JS.',
+    difficulty: 'advanced',
+    category: 'html',
+    xpValue: 350,
+    instructions: 'Qual propriedade JavaScript extrai e transfere o controle do canvas para renderização paralela (OffscreenCanvas)? Escreva apenas o nome do método JS clássico contido nas instâncias de Canvas.',
+    initialCode: '// Digite apenas o nome do método JS, ex: getElementById\n',
+    expectedKeywords: ['transfercontroltooffscreen'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase().trim().replace(/[();'"]/g, '');
+      if (clean.includes('transfercontroltooffscreen')) {
+        return { success: true, message: 'Corretíssimo! transferControlToOffscreen() é a chave do alto desempenho!' };
+      }
+      return { success: false, message: 'Incorreto. Tente consultar a aba de teoria avançada do Canvas!' };
+    },
+    hint: 'Começa com transferControlTo...'
+  },
+  {
+    id: 'ch-css-pointer',
+    title: 'Ponteiro Pixelado',
+    shortDesc: 'Mude o cursor do mouse do usuário para estilo de jogo.',
+    difficulty: 'beginner',
+    category: 'css',
+    xpValue: 150,
+    instructions: 'Dentro de uma classe CSS chamada `.area-jogo`, defina o cursor padrão para que aponte para um arquivo de imagem localizado em "mira.png" com fallback do navegador automático.',
+    initialCode: '.area-jogo {\n  /* Escreva sua propriedade de cursor */\n}',
+    expectedKeywords: ['cursor:', 'url(', 'mira.png', 'auto'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase().replace(/\s+/g, '');
+      if (!clean.includes('cursor:')) return { success: false, message: 'Adicione a propriedade cursor!' };
+      if (!clean.includes('url(')) return { success: false, message: 'Use url(...) para apontar para a imagem mira.png' };
+      if (!clean.includes('mira.png')) return { success: false, message: 'Mapeie o link correto para "mira.png"' };
+      if (!clean.includes('auto')) return { success: false, message: 'Não se esqueça do fallback padrão "auto" no final!' };
+      return { success: true, message: 'Genial! Agora a mira pixel-art de mira de tiro está sincronizada.' };
+    },
+    hint: 'Estruturação típica: cursor: url("mira.png"), auto;'
+  },
+  {
+    id: 'ch-css-step',
+    title: 'Ciclo de Sprite Discreto',
+    shortDesc: 'Evite o embaçamento e arraste na animação de personagens Gamedev.',
+    difficulty: 'intermediate',
+    category: 'css',
+    xpValue: 250,
+    instructions: 'Estilize a propriedade timing function de animação CSS para fazer uma transição de sprite cortando em 8 passos idênticos.',
+    initialCode: '.sprite-personagem {\n  /* Escreva sua timing function */\n}',
+    expectedKeywords: ['steps(8)'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase().replace(/\s+/g, '');
+      if (clean.includes('steps(8)')) {
+        return { success: true, message: 'Excelente! steps(8) fatiará perfeitamente a spritesheet de 8 animações!' };
+      }
+      return { success: false, message: 'Não encontramos o fatiamento steps(8) exigido.' };
+    },
+    hint: 'Use: animation-timing-function: steps(8); ou inclua steps(8) na propriedade de atalho'
+  },
+  {
+    id: 'ch-css-crt',
+    title: 'Mesclagem CRT Retro',
+    shortDesc: 'Como mesclar escaneamento de linhas com o canvas.',
+    difficulty: 'advanced',
+    category: 'css',
+    xpValue: 400,
+    instructions: 'Qual propriedade CSS é utilizada para misturar a sobreposição das ranhuras CRT com as cores de fundo do canvas (ex: overlay/multiply)? Declare esta propriedade específica de misturas.',
+    initialCode: '.crt-overlay {\n  /* Escreva a propriedade de mistura CSS */\n}',
+    expectedKeywords: ['mix-blend-mode'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase().replace(/\s+/g, '');
+      if (clean.includes('mix-blend-mode:')) {
+        return { success: true, message: 'Fabuloso! mix-blend-mode permite misturar scanlines de CRT como se fossem luzes físicas de pixels de TVs velhas.' };
+      }
+      return { success: false, message: 'Use a propriedade mix-blend-mode para mesclar cores!' };
+    },
+    hint: 'A propriedade de CSS inicia com "mix-blend-..."'
+  },
+  {
+    id: 'ch-js-loop',
+    title: 'Executando o Loop Principal',
+    shortDesc: 'Qual API do navegador comanda a taxa ideal de quadros para desenhos.',
+    difficulty: 'beginner',
+    category: 'js',
+    xpValue: 150,
+    instructions: 'Escreva a chamada à função global nativa do JavaScript usada para requisitar que o navegador re-desenhe a tela na próxima atualização de quadros (passando o gameLoop como argumento).',
+    initialCode: 'function gameLoop() {\n  // ciclo continuo\n\n  // Digite aqui o comando para invocar o proximo frame de gameLoop:\n}',
+    expectedKeywords: ['requestanimationframe', 'gameloop'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase().replace(/\s+/g, '');
+      if (!clean.includes('requestanimationframe')) {
+        return { success: false, message: 'Você precisa registrar a função de animação nativa.' };
+      }
+      if (!clean.includes('gameloop')) {
+        return { success: false, message: 'Você precisa repassar o callback gameLoop para que continue rodando indefinidamente!' };
+      }
+      return { success: true, message: 'Fantástico! requestAnimationFrame se auto-calibra de acordo com a taxa física do monitor do jogador automáticamente.' };
+    },
+    hint: 'Chame: requestAnimationFrame(gameLoop);'
+  },
+  {
+    id: 'ch-js-aabb',
+    title: 'Física de Colisão AABB',
+    shortDesc: 'Calcule a lateral direita de um retângulo no universo customizado.',
+    difficulty: 'intermediate',
+    category: 'js',
+    xpValue: 250,
+    instructions: 'Completar o cálculo que avalia a borda direita de um retângulo. Se o objeto de jogo `player` possui uma coordenada horizontal `x` e largura `w`, como obtemos a coordenada exata da sua borda direita? Escreva a expressão matemática simples.',
+    initialCode: '// Borda Direita = \n',
+    expectedKeywords: ['x', '+', 'w'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase().replace(/\s+/g, '');
+      if (clean === 'player.x+player.w' || clean === 'x+w' || clean === 'player.x+w' || (clean.includes('x') && clean.includes('+') && clean.includes('w'))) {
+        return { success: true, message: 'Estatística incrível! Somar a posição X com a largura total aponta a exata extremidade leste do corpo.' };
+      }
+      return { success: false, message: 'Certifique-se de somar a coordenada horizontal (x) com a respectiva largura (w)!' };
+    },
+    hint: 'Apenas retorne a soma: x + w'
+  },
+  {
+    id: 'ch-js-lerp',
+    title: 'Movimentos Suaves (LERP)',
+    shortDesc: 'Crie uma movimentação de câmera suave usando Interpolação Linear.',
+    difficulty: 'advanced',
+    category: 'js',
+    xpValue: 400,
+    instructions: 'Para a suavização Linear (LERP), qual a fórmula curta que nos move da posição atual da câmera (cameraX) rumo ao playerX acelerado por um peso constante de suavização (0.1)? Escreva a fórmula de atualização de cameraX.',
+    initialCode: 'cameraX = cameraX + \n',
+    expectedKeywords: ['playerx', 'camerax', '0.1', '*'],
+    testRunner: (code) => {
+      const clean = code.toLowerCase().replace(/\s+/g, '');
+      if (clean.includes('playerx-camerax') && clean.includes('0.1')) {
+        return { success: true, message: 'Sua câmera agora desliza de forma macia e elegante sobre o jogador principal! Excelente matemática de lerp.' };
+      }
+      return { success: false, message: 'Dica: A fórmula do LERP atualizado é cameraX += (playerX - cameraX) * 0.1' };
+    },
+    hint: 'cameraX + (playerX - cameraX) * 0.1'
+  }
+];
+
+// --- CORE APP STATE ---
+let state = {
+  activeTab: 'encyclopedia', // 'encyclopedia' | 'challenges'
+  selectedLanguage: 'html',  // 'html' | 'css' | 'js'
+  selectedDifficulty: 'beginner', // 'beginner' | 'intermediate' | 'advanced'
+  searchQuery: '',
+  selectedLessonId: 'html-beg-canvas',
+  selectedChallengeId: 'ch-html-canvas',
+  
+  // Game Stats Persistence
+  visitedTutorials: [],
+  completedChallenges: [],
+  xp: 0,
+  
+  // Dynamic Labs Vars
+  slimeHealth: 100,
+  isShaking: false,
+  crtActive: true,
+  mousePos: { x: 100, y: 100 },
+  gameLoopFrame: 0,
+  gameLoopSpeed: 1,
+  wizardPos: { x: 100, y: 80 },
+  wizardHasMoved: false,
+  
+  // Challenge code IDE
+  challengeCode: '',
+  challengeFeedback: null,
+
+  // Creator Modal State
+  showCreator: false,
+  creatorTab: 'lesson', // 'lesson' | 'challenge'
+  creatorTitle: '',
+  creatorDesc: '',
+  creatorTimeXp: '',
+  creatorCode: '',
+  creatorDocHint: '',
+  generatedJSON: ''
+};
+
+// --- SYNC PROGRESS LOGIC ---
+function loadProgress() {
+  try {
+    const savedTutorials = localStorage.getItem('gamedev_tutorials');
+    state.visitedTutorials = savedTutorials ? JSON.parse(savedTutorials) : [];
+  } catch (e) { state.visitedTutorials = []; }
+
+  try {
+    const savedChallenges = localStorage.getItem('gamedev_challenges');
+    state.completedChallenges = savedChallenges ? JSON.parse(savedChallenges) : [];
+  } catch (e) { state.completedChallenges = []; }
+
+  try {
+    const savedXp = localStorage.getItem('gamedev_xp');
+    state.xp = savedXp ? parseInt(savedXp, 10) : 0;
+  } catch (e) { state.xp = 0; }
+}
+
+function saveProgress() {
+  try {
+    localStorage.setItem('gamedev_tutorials', JSON.stringify(state.visitedTutorials));
+    localStorage.setItem('gamedev_challenges', JSON.stringify(state.completedChallenges));
+    localStorage.setItem('gamedev_xp', state.xp.toString());
+  } catch (e) { console.error('Error saving progress', e); }
+}
+
+// --- CORE ANIMATION LOOPS ---
+let animationFrameId = null;
+let lastGameLoopTime = 0;
+
+function runGameLoopTimer(time) {
+  if (time - lastGameLoopTime > 150 / state.gameLoopSpeed) {
+    state.gameLoopFrame = (state.gameLoopFrame + 1) % 100;
+    
+    // If the gameloop element is currently drawn inside workshop, update it in-place
+    const countLabel = document.getElementById('gameloop-count-span');
+    const fillIndicator = document.getElementById('gameloop-progressbar-fill');
+    if (countLabel) {
+      countLabel.textContent = `Contagem: ${state.gameLoopFrame}`;
+    }
+    if (fillIndicator) {
+      fillIndicator.style.left = `${state.gameLoopFrame}%`;
+    }
+    lastGameLoopTime = time;
+  }
+  animationFrameId = requestAnimationFrame(runGameLoopTimer);
+}
+
+// --- RENDER UTILITIES ---
+function getActiveLesson() {
+  const list = ENCYCLOPEDIA_DATA[state.selectedLanguage] || [];
+  return list.find(i => i.id === state.selectedLessonId) || list[0];
+}
+
+function getActiveChallenge() {
+  return CHALLENGE_DATA.find(c => c.id === state.selectedChallengeId) || CHALLENGE_DATA[0];
+}
+
+function getFilteredLessons() {
+  const rawList = ENCYCLOPEDIA_DATA[state.selectedLanguage] || [];
+  return rawList.filter(item => {
+    const matchesDifficulty = item.difficulty === state.selectedDifficulty;
+    const matchesQuery = item.title.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
+                          item.shortDesc.toLowerCase().includes(state.searchQuery.toLowerCase());
+    return matchesDifficulty && matchesQuery;
+  });
+}
+
+function getFilteredChallenges() {
+  return CHALLENGE_DATA.filter(ch => {
+    const matchesCategory = ch.category === state.selectedLanguage;
+    const matchesDifficulty = ch.difficulty === state.selectedDifficulty;
+    const matchesQuery = ch.title.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
+                          ch.shortDesc.toLowerCase().includes(state.searchQuery.toLowerCase());
+    return matchesCategory && matchesDifficulty && matchesQuery;
+  });
+}
+
+// Set up Default active items so there is no empty detail state
+function syncDefaultActiveItems() {
+  const lessons = getFilteredLessons();
+  if (lessons.length > 0) {
+    if (!lessons.some(i => i.id === state.selectedLessonId)) {
+      state.selectedLessonId = lessons[0].id;
+    }
+  }
+
+  const challenges = getFilteredChallenges();
+  if (challenges.length > 0) {
+    if (!challenges.some(c => c.id === state.selectedChallengeId)) {
+      state.selectedChallengeId = challenges[0].id;
+      state.challengeCode = challenges[0].initialCode;
+      state.challengeFeedback = null;
+    }
+  } else {
+    state.challengeCode = '';
+    state.challengeFeedback = null;
+  }
+}
+
+// --- UI EVENT HANDLERS ---
+function selectMainTab(newTab) {
+  state.activeTab = newTab;
+  state.searchQuery = '';
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-input').placeholder = `Buscar na ${newTab === 'encyclopedia' ? 'enciclopédia' : 'lista de desafios'}...`;
+  
+  syncDefaultActiveItems();
+  renderUI();
+}
+
+function selectLanguageTab(lang) {
+  state.selectedLanguage = lang;
+  state.searchQuery = '';
+  document.getElementById('search-input').value = '';
+  
+  syncDefaultActiveItems();
+  renderUI();
+}
+
+function selectDifficulty(diff) {
+  state.selectedDifficulty = diff;
+  state.searchQuery = '';
+  document.getElementById('search-input').value = '';
+  
+  syncDefaultActiveItems();
+  renderUI();
+}
+
+function handleSearch(query) {
+  state.searchQuery = query;
+  const clearBtn = document.getElementById('clear-search-btn');
+  if (query) {
+    clearBtn.classList.remove('hidden');
+  } else {
+    clearBtn.classList.add('hidden');
+  }
+  
+  syncDefaultActiveItems();
+  renderListSidebar();
+  renderDetailPanel();
+}
+
+function markActiveLessonConcluded() {
+  const lesson = getActiveLesson();
+  if (!lesson) return;
+  if (!state.visitedTutorials.includes(lesson.id)) {
+    state.visitedTutorials.push(lesson.id);
+    state.xp += 50;
+    saveProgress();
+    renderUI();
+  }
+}
+
+function runChallengeTests() {
+  const chall = getActiveChallenge();
+  if (!chall) return;
+  
+  const val = document.getElementById('challenge-code-editor')?.value || state.challengeCode;
+  state.challengeCode = val;
+  
+  const result = chall.testRunner(val);
+  state.challengeFeedback = result;
+  
+  if (result.success) {
+    if (!state.completedChallenges.includes(chall.id)) {
+      state.completedChallenges.push(chall.id);
+      state.xp += chall.xpValue;
+      saveProgress();
+    }
+  }
+  
+  renderDetailPanel();
+}
+
+// --- RENDERING SUBSYSTEMS ---
+function renderUI() {
+  // Update Gamified Stat Bar text values
+  const currentLvl = Math.floor(state.xp / 1000) + 1;
+  document.getElementById('level-badge').textContent = currentLvl;
+  document.getElementById('level-num').textContent = currentLvl;
+  document.getElementById('xp-text').textContent = `${state.xp} XP`;
+  
+  // Theory & Challenge counts
+  document.getElementById('theory-completed').textContent = `${state.visitedTutorials.length} / 11`;
+  document.getElementById('challenges-completed').textContent = `${state.completedChallenges.length} / 9`;
+  
+  // Progress Line Percent
+  const percent = Math.min(100, (state.xp % 1000) / 10);
+  document.getElementById('xp-progress-bar').style.width = `${percent}%`;
+
+  // Render navigation states (active tab highlighted borders)
+  const tabEnc = document.getElementById('tab-encyclopedia');
+  const tabChall = document.getElementById('tab-challenges');
+  if (state.activeTab === 'encyclopedia') {
+    tabEnc.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer bg-white/5 text-white shadow-inner border-b-2 border-indigo-500';
+    tabChall.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer text-slate-400 hover:text-white hover:bg-[#16161D]/50';
+  } else {
+    tabChall.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer bg-white/5 text-white shadow-inner border-b-2 border-indigo-500';
+    tabEnc.className = 'flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-2.5 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer text-slate-400 hover:text-white hover:bg-[#16161D]/50';
+  }
+
+  // Render subtabs (HTML, CSS, JS active/inactive visual status states)
+  ['html', 'css', 'js'].forEach(lang => {
+    const elem = document.getElementById(`subtab-${lang}`);
+    const pingEl = document.getElementById(`ping-${lang}`);
+    if (state.selectedLanguage === lang) {
+      elem.className = 'p-3 md:p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer relative group overflow-hidden border-indigo-500 bg-indigo-600/15 text-indigo-300 shadow-lg shadow-black/50 ring-1 ring-white/10';
+      pingEl.classList.remove('hidden');
+      pingEl.classList.add('inline-block', 'animate-ping');
+    } else {
+      elem.className = 'p-3 md:p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer relative group overflow-hidden border-white/10 bg-[#0F0F12] text-slate-400 hover:text-slate-200 hover:border-indigo-500/40';
+      pingEl.classList.add('hidden');
+      pingEl.classList.remove('inline-block', 'animate-ping');
+    }
+  });
+
+  // Render active difficulty select buttons
+  ['beginner', 'intermediate', 'advanced'].forEach(d => {
+    const btn = document.getElementById(`diff-btn-${d}`);
+    if (state.selectedDifficulty === d) {
+      btn.className = 'flex-1 md:flex-none justify-center px-4 py-1.5 rounded transition-all text-xs font-mono font-semibold flex items-center gap-2 cursor-pointer bg-indigo-600 text-white shadow-md border border-indigo-500/40';
+    } else {
+      btn.className = 'flex-1 md:flex-none justify-center px-4 py-1.5 rounded transition-all text-xs font-mono font-semibold flex items-center gap-2 cursor-pointer text-slate-400 hover:text-white';
+    }
+  });
+
+  // Filter labels
+  document.getElementById('label-lang-filter').textContent = state.selectedLanguage.toUpperCase();
+  const diffWord = state.selectedDifficulty === 'beginner' ? 'Iniciante' : state.selectedDifficulty === 'intermediate' ? 'Intermediário' : 'Avançado';
+  document.getElementById('label-diff-filter').textContent = diffWord;
+
+  // Render Sidebar, Details sections
+  renderListSidebar();
+  renderDetailPanel();
+
+  // Draw any active Lucide tags on-the-fly
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+// Side indexing renderer
+function renderListSidebar() {
+  const sidebarTitle = document.getElementById('sidebar-list-title');
+  const countSpan = document.getElementById('results-count');
+  const listContainer = document.getElementById('items-list');
+
+  listContainer.innerHTML = '';
+
+  if (state.activeTab === 'encyclopedia') {
+    sidebarTitle.textContent = 'Tópicos de Estudo';
+    const lessons = getFilteredLessons();
+    countSpan.textContent = `${lessons.length} Encontrado(s)`;
+
+    if (lessons.length === 0) {
+      listContainer.innerHTML = `
+        <div class="border border-dashed border-white/10 bg-[#0F0F12]/20 rounded-xl p-8 text-center text-slate-500 font-mono text-xs">
+          Nenhum tópico correspondente à sua busca neste filtro.
+        </div>
+      `;
+      return;
+    }
+
+    lessons.forEach(item => {
+      const isRead = state.visitedTutorials.includes(item.id);
+      const isActive = state.selectedLessonId === item.id;
+      
+      const card = document.createElement('button');
+      card.className = `p-3.5 rounded-xl border text-left transition-all duration-200 relative overflow-hidden group cursor-pointer ${
+        isActive 
+          ? 'bg-[#16161D] border-indigo-500/50 shadow-lg ring-1 ring-white/10' 
+          : 'bg-[#0F0F12]/60 border-white/5 hover:border-indigo-500/30 hover:bg-[#16161D]/50'
+      }`;
+
+      card.innerHTML = `
+        <div class="absolute top-0 left-0 w-1.5 h-full transition-all ${isActive ? 'bg-indigo-500' : 'bg-transparent group-hover:bg-indigo-500/30'}"></div>
+        <div class="flex items-start gap-3 pl-1.5">
+          <div class="p-2 rounded-lg ${isActive ? 'bg-[#0A0A0B]' : 'bg-black/30'} border border-white/10 shadow-inner text-indigo-400">
+            <i data-lucide="${item.icon || 'tv'}" class="w-5 h-5"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-center gap-2">
+              <h4 class="text-sm font-semibold truncate group-hover:text-slate-100 transition-colors text-slate-200">${item.title}</h4>
+              ${isRead ? `<span class="flex items-center text-indigo-450 gap-0.5" title="Concluído"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i></span>` : ''}
+            </div>
+            <p class="text-xs text-slate-400 line-clamp-2 mt-1 font-mono">${item.shortDesc}</p>
+            <div class="flex gap-2.5 mt-2.5 text-[10px] font-mono text-slate-500">
+              <span>⏰ ${item.estimatedTime}</span>
+              <span>🔥 +50 XP</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      card.onclick = () => {
+        state.selectedLessonId = item.id;
+        if (!state.visitedTutorials.includes(item.id)) {
+          state.visitedTutorials.push(item.id);
+          state.xp += 50;
+          saveProgress();
+        }
+        renderUI();
+      };
+      listContainer.appendChild(card);
+    });
+
+  } else {
+    // Render Challenges List Sidebar
+    sidebarTitle.textContent = 'Desafios Ativos';
+    const challenges = getFilteredChallenges();
+    countSpan.textContent = `${challenges.length} Encontrado(s)`;
+
+    if (challenges.length === 0) {
+      listContainer.innerHTML = `
+        <div class="border border-dashed border-white/10 bg-[#0F0F12]/20 rounded-xl p-8 text-center text-slate-500 font-mono text-xs">
+          Nenhum desafio correspondente encontrado nesta dificuldade.
+        </div>
+      `;
+      return;
+    }
+
+    challenges.forEach(chall => {
+      const isSolved = state.completedChallenges.includes(chall.id);
+      const isActive = state.selectedChallengeId === chall.id;
+
+      const card = document.createElement('button');
+      card.className = `p-3.5 rounded-xl border text-left transition-all duration-200 relative overflow-hidden group cursor-pointer ${
+        isActive 
+          ? 'bg-[#16161D] border-indigo-500/50 shadow-lg ring-1 ring-white/10' 
+          : 'bg-[#0F0F12]/60 border-white/5 hover:border-indigo-500/30 hover:bg-[#16161D]/50'
+      }`;
+
+      card.innerHTML = `
+        <div class="absolute top-0 left-0 w-1.5 h-full transition-all ${isActive ? 'bg-indigo-500' : 'bg-transparent group-hover:bg-indigo-500/30'}"></div>
+        <div class="flex items-start gap-3 pl-1.5">
+          <div class="p-2 rounded-lg ${isActive ? 'bg-[#0A0A0B]' : 'bg-black/30'} border border-white/10 text-indigo-400">
+            <i data-lucide="code-2" class="w-5 h-5 text-indigo-400"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-center gap-2">
+              <h4 class="text-sm font-semibold truncate text-slate-200">${chall.title}</h4>
+              ${isSolved ? `<span class="flex items-center text-indigo-400 gap-0.5 bg-indigo-950/45 border border-indigo-800/40 px-1.5 py-0.2 text-[8px] rounded font-mono uppercase font-bold">Aprovado</span>` : ''}
+            </div>
+            <p class="text-xs text-slate-400 line-clamp-2 mt-1 font-mono">${chall.shortDesc}</p>
+            <div class="flex justify-between items-center mt-2.5 text-[10px] font-mono text-slate-500">
+              <span>🏆 Desafio de Fixação</span>
+              <span class="text-indigo-400 font-bold">+${chall.xpValue} XP</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      card.onclick = () => {
+        state.selectedChallengeId = chall.id;
+        state.challengeCode = chall.initialCode;
+        state.challengeFeedback = null;
+        renderUI();
+      };
+      listContainer.appendChild(card);
+    });
+  }
+
+  // Footer visual hint
+  const hintDiv = document.createElement('div');
+  hintDiv.className = 'mt-4 p-4 rounded-xl bg-[#0F0F12]/40 border border-white/5 text-xs text-slate-400 font-mono';
+  hintDiv.innerHTML = `
+    <span class="text-indigo-400 font-bold block mb-1">Dica de Desenvolvimento 💡</span>
+    Crie um novo tópico de HTML, CSS ou JavaScript preenchendo a caixa "Gerar Conteúdo" no canto superior direito para injetá-los depois!
+  `;
+  listContainer.appendChild(hintDiv);
+
+  if (window.lucide) window.lucide.createIcons();
+}
+
+// Right details panel workbench
+function renderDetailPanel() {
+  const panel = document.getElementById('details-panel');
+  panel.innerHTML = '';
+
+  if (state.activeTab === 'encyclopedia') {
+    const lesson = getActiveLesson();
+    if (!lesson) {
+      panel.innerHTML = `<div class="text-center p-12 text-slate-500 font-mono">Selecione uma lição na barra lateral.</div>`;
+      return;
+    }
+
+    const isConcluded = state.visitedTutorials.includes(lesson.id);
+
+    panel.innerHTML = `
+      <div class="flex flex-col gap-6">
+        
+        <!-- Header Info -->
+        <div class="border-b border-white/10 pb-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2.5 py-0.5 bg-[#0F0F12] text-[10px] text-indigo-400 rounded-full font-mono border border-white/5 uppercase tracking-wider font-bold">
+              ${lesson.difficulty}
+            </span>
+            <span class="text-xs font-mono text-slate-400">
+              Estudo sugerido: ${lesson.estimatedTime}
+            </span>
+          </div>
+          <h2 class="text-xl md:text-2xl font-semibold text-white flex items-center gap-2">
+            <i data-lucide="${lesson.icon || 'tv'}" class="w-6 h-6 text-indigo-400"></i>
+            <span>${lesson.title}</span>
+          </h2>
+        </div>
+
+        <!-- Concept Block -->
+        <div class="p-3.5 bg-indigo-500/5 rounded-lg border border-indigo-500/20 text-xs text-slate-300 font-mono leading-relaxed">
+          <strong class="text-indigo-400 block mb-1">🎮 Teoria / Em termos práticos de GameDEV:</strong>
+          ${lesson.concept}
+        </div>
+
+        <!-- Layout split: Explanation vs Live Simulator -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+          
+          <!-- Explanation Column -->
+          <div class="md:col-span-7 flex flex-col gap-4 text-xs font-mono text-slate-300 leading-relaxed max-h-[300px] overflow-y-auto pr-1">
+            <h3 class="text-slate-100 font-bold text-sm">Estruturação e Entendimento</h3>
+            <div class="whitespace-pre-line text-[11px] pl-2 border-l border-white/10">
+              ${lesson.tutorialHTML}
+            </div>
+          </div>
+
+          <!-- Live Simulator box wrapper -->
+          <div class="md:col-span-12 lg:col-span-5 flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-mono text-slate-500">🧪 Simulador Interativo Live</span>
+              <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+            </div>
+
+            <!-- Workspace viewport frame -->
+            <div id="live-demo-viewport" class="bg-[#0A0A0B] border border-white/10 rounded-lg p-3.5 h-48 relative overflow-hidden flex flex-col justify-between">
+              <!-- Inline loaded sub-views -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Boilerplate copy-code block -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+            <span>📝 Modelo Simplificado de Escrita (Boilerplate):</span>
+            <button id="copy-boilerplate-btn" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 cursor-pointer font-semibold">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Copiar Boilerplate</span>
+            </button>
+          </div>
+          <pre class="bg-[#0A0A0B] p-4 rounded-lg border border-white/10 text-[11px] font-mono leading-relaxed overflow-x-auto text-indigo-300"><code id="code-snippet-box"></code></pre>
+        </div>
+
+        <!-- Conclude progress footer status -->
+        <div class="border-t border-white/10 pt-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <span class="text-xs text-slate-400 font-mono">
+            ${isConcluded 
+              ? '✅ Você já estudou este conceito e adquiriu +50 XP.' 
+              : '📖 Leia os conceitos acima para registrar o progresso e ganhar XP.'}
+          </span>
+          ${!isConcluded ? `
+            <button id="conclude-study-btn" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold shadow-lg shadow-indigo-500/10 active:scale-95 transition-all flex items-center gap-2 cursor-pointer border border-indigo-500/30">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Concluir Leitura (+50 XP)</span>
+            </button>
+          ` : ''}
+        </div>
+
+      </div>
+    `;
+
+    // Inject snippet text secure escape
+    document.getElementById('code-snippet-box').textContent = lesson.codeExample;
+
+    // Bind footer actions
+    const concludeBtn = document.getElementById('conclude-study-btn');
+    if (concludeBtn) {
+      concludeBtn.addEventListener('click', markActiveLessonConcluded);
+    }
+
+    const copyBtn = document.getElementById('copy-boilerplate-btn');
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(lesson.codeExample);
+      alert('Código boilerplate copiado!');
+    });
+
+    // Populate the Interactive Live Simulator Sub-viewport
+    drawActiveWorkshopSimulator(lesson.liveDemoConfig);
+
+  } else {
+    // RENDER CHALLENGES TAB IDE INTERFACE WORKBENCH
+    const chall = getActiveChallenge();
+    if (!chall) {
+      panel.innerHTML = `<div class="text-center p-12 text-slate-500 font-mono">Selecione um desafio na lista ao lado.</div>`;
+      return;
+    }
+
+    const isSolved = state.completedChallenges.includes(chall.id);
+
+    panel.innerHTML = `
+      <div class="flex flex-col gap-5">
+        
+        <!-- Header Info -->
+        <div class="border-b border-white/10 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <div>
+            <span class="px-2 py-0.5 bg-indigo-500/10 text-[9px] text-indigo-300 rounded border border-indigo-500/35 uppercase tracking-wider font-mono mr-2 font-bold">
+              Exercício • ${chall.difficulty}
+            </span>
+            <h2 class="text-xl font-medium text-white flex items-center gap-2 mt-1.5">
+              <i data-lucide="trophy" class="w-5.5 h-5.5 text-indigo-400"></i>
+              <span>${chall.title}</span>
+            </h2>
+          </div>
+          
+          <div class="text-right text-xs font-mono text-indigo-400 font-bold">
+            Valor: +${chall.xpValue} XP
+          </div>
+        </div>
+
+        <!-- Instructions Box -->
+        <div class="p-4 bg-[#0A0A0B]/80 border border-white/10 rounded-lg">
+          <h3 class="text-xs font-mono text-indigo-400 font-bold uppercase mb-1.5 flex items-center gap-1.5">
+            <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+            <span>Instruções do Exercício</span>
+          </h3>
+          <p class="text-xs text-slate-300 font-mono leading-relaxed">
+            ${chall.instructions}
+          </p>
+        </div>
+
+        <!-- Interactive Sandbox IDE Textarea inputs -->
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+            <span>🖥️ Editor Interativo do Aluno:</span>
+            <button id="clear-ide-btn" class="text-slate-500 hover:text-slate-300 flex items-center gap-1 cursor-pointer font-semibold">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+              <span>Resetar Código</span>
+            </button>
+          </div>
+
+          <textarea
+            id="challenge-code-editor"
+            class="w-full h-36 bg-[#0A0A0B] p-4 rounded-lg border border-white/10 font-mono text-xs focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none leading-relaxed text-indigo-100"
+            placeholder="// Digite sua solução aqui..."
+          ></textarea>
+          <span class="text-[10px] text-slate-500 font-mono">Dica rápida: ${chall.hint}</span>
+        </div>
+
+        <!-- Visual Validator Feedbacks container -->
+        <div class="flex flex-col gap-3">
+          <div id="ide-feedback-box"></div>
+
+          <div class="flex justify-between items-center pt-2">
+            <span class="text-xs text-slate-500 font-mono">
+              ${isSolved ? '🟢 Parabéns! Exercício aprovado.' : '🔴 Pendente de aprovação.'}
+            </span>
+
+            <button
+              id="run-challenge-test-btn"
+              class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold shadow-lg shadow-indigo-600/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer border border-indigo-500/40"
+            >
+              <i data-lucide="play" class="w-3.5 h-3.5 text-indigo-200 fill-indigo-200"></i>
+              <span>Executar Código e Testar</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    // Force bind current typed code
+    const textarea = document.getElementById('challenge-code-editor');
+    textarea.value = state.challengeCode || chall.initialCode;
+    textarea.addEventListener('input', (e) => {
+      state.challengeCode = e.target.value;
+    });
+
+    // Reset editor action
+    document.getElementById('clear-ide-btn').addEventListener('click', () => {
+      state.challengeCode = chall.initialCode;
+      textarea.value = chall.initialCode;
+      state.challengeFeedback = null;
+      document.getElementById('ide-feedback-box').innerHTML = '';
+    });
+
+    // Execution check click binding
+    document.getElementById('run-challenge-test-btn').addEventListener('click', runChallengeTests);
+
+    // Retain feedback box display if exits
+    drawChallengeFeedback();
+  }
+
+  if (window.lucide) window.lucide.createIcons();
+}
+
+// Render dynamic feedback overlays for sandbox test runners
+function drawChallengeFeedback() {
+  const box = document.getElementById('ide-feedback-box');
+  if (!box) return;
+  if (!state.challengeFeedback) {
+    box.innerHTML = '';
+    return;
+  }
+
+  const fd = state.challengeFeedback;
+  box.innerHTML = `
+    <div class="p-3.5 rounded-lg border flex items-start gap-2.5 text-xs font-mono transition-all ${
+      fd.success 
+        ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-300' 
+        : 'bg-rose-500/5 border-rose-500/25 text-rose-300'
+    }">
+      <i data-lucide="${fd.success ? 'check-circle-2' : 'alert-circle'}" class="${fd.success ? 'text-emerald-400' : 'text-rose-450'} w-4 h-4 shrink-0 mt-0.5"></i>
+      <div>
+        <strong class="${fd.success ? 'text-emerald-400' : 'text-rose-400'}">
+          ${fd.success ? '🏆 TESTE APROVADO!' : '❌ REQUISITO EM FALTA:'}
+        </strong>
+        <p class="mt-1 leading-relaxed">${fd.message}</p>
+      </div>
+    </div>
+  `;
+  if (window.lucide) window.lucide.createIcons();
+}
+
+// Render dynamic active interactive simulated environments
+function drawActiveWorkshopSimulator(config) {
+  const container = document.getElementById('live-demo-viewport');
+  if (!container) return;
+  
+  container.innerHTML = '';
+
+  if (!config) return;
+
+  const type = config.type;
+  const p = config.params || {};
+
+  if (type === 'canvas') {
+    container.innerHTML = `
+      <div class="flex flex-col justify-between h-full w-full">
+        <p class="text-[10px] text-slate-500 font-mono">// Canvas 2D renderizado</p>
+        <div class="border border-white/10 bg-[#16161D] rounded p-4 flex items-center justify-center relative flex-grow my-1">
+          <div id="canvas-subview-render"></div>
+        </div>
+        <span class="text-[8px] text-slate-600 font-mono text-right">Render Context: 2D</span>
+      </div>
+    `;
+
+    const sub = document.getElementById('canvas-subview-render');
+
+    if (p.drawSprite) {
+      sub.innerHTML = `
+        <div class="flex flex-col items-center">
+          <div class="w-10 h-10 bg-indigo-500 relative rounded flex items-center justify-center bounce-sprite">
+            <div class="w-2 h-2 bg-white rounded-full absolute top-2 left-2"></div>
+            <div class="w-2 h-2 bg-white rounded-full absolute top-2 right-2"></div>
+          </div>
+          <span class="text-[9px] font-mono mt-2 text-slate-400">Hero Sprite Carregado</span>
+        </div>
+      `;
+    } else if (p.useDataAttr) {
+      sub.innerHTML = `
+        <div class="text-center font-mono">
+          <p class="text-[10px] text-slate-300 bg-[#0A0A0B] px-2.5 py-1.5 rounded border border-white/10">
+            Dataset: <span class="text-indigo-400 font-bold">dataset.damage = 50</span>
+          </p>
+        </div>
+      `;
+    } else if (p.audioTrigger) {
+      sub.innerHTML = `
+        <div class="flex flex-col items-center gap-1.5">
+          <button id="trigger-sound-inline-btn" class="px-3.5 py-1 bg-indigo-500 hover:bg-indigo-600 rounded text-[10px] text-white cursor-pointer active:scale-95 transition-all font-semibold">
+            🔊 Tocar Som (Coin.wav)
+          </button>
+          <span class="text-[8px] text-slate-500 font-mono">Simulação de Buffer Audio</span>
+        </div>
+      `;
+      document.getElementById('trigger-sound-inline-btn').addEventListener('click', () => {
+        alert('Bip! Executando trigger de som e efeito sonoro nativo...');
+      });
+    } else if (p.offscreenText) {
+      sub.innerHTML = `
+        <span class="text-xs text-indigo-400 animate-pulse font-mono font-bold">
+          ${p.offscreenText}
+        </span>
+      `;
+    } else if (p.showAABBDemo) {
+      sub.innerHTML = `
+        <div class="relative w-full h-14 flex items-center justify-around gap-6">
+          <div class="w-8 h-8 bg-indigo-600/20 border border-indigo-500/40 text-[8px] flex items-center justify-center text-indigo-200 font-bold rounded">Colisor</div>
+          <div class="w-8 h-8 bg-rose-500/20 border border-rose-400/40 text-[8px] flex items-center justify-center text-rose-250 font-bold animate-ping rounded">Alvo</div>
+        </div>
+      `;
+    } else if (p.platformPhysics) {
+      sub.innerHTML = `
+        <div class="flex flex-col gap-2 w-40 pt-1">
+          <div class="h-1 bg-white/20 w-full rounded"></div>
+          <div class="flex justify-between text-[8px] text-slate-500 font-mono w-full">
+            <span>VelY: +9.8 (Gravity)</span>
+            <span>Friction: 0.98</span>
+          </div>
+        </div>
+      `;
+    } else {
+      sub.innerHTML = `
+        <span class="text-xs text-indigo-400 font-mono font-semibold">800x600 Pixels Pronto</span>
+      `;
+    }
+
+  } else if (type === 'healthbar') {
+    container.innerHTML = `
+      <div class="flex flex-col justify-between h-full">
+        <p class="text-[10px] text-slate-500 font-mono">// Interface HUD Reativa</p>
+        
+        <div class="bg-[#16161D] p-2.5 rounded border border-white/10">
+          <div class="flex justify-between items-center text-[10px] mb-1.5 font-mono">
+            <span>Inimigo: Slime King</span>
+            <span id="slime-hp-text" class="text-rose-450 font-bold">${state.slimeHealth} / 100 HP</span>
+          </div>
+          <div class="w-full bg-[#0A0A0B] h-3.5 rounded border border-white/10 overflow-hidden relative">
+            <div id="slime-hp-fill" class="h-full bg-gradient-to-r from-rose-500 to-red-650 transition-all duration-300" style="width: ${state.slimeHealth}%"></div>
+          </div>
+        </div>
+
+        <div class="flex gap-2 justify-center mt-1">
+          <button id="slime-hit-btn" class="px-2.5 py-1 bg-rose-500/20 hover:bg-rose-500/30 active:scale-95 text-rose-350 border border-rose-500/30 rounded text-[9px] cursor-pointer font-semibold">
+            Dar Golpe (-20 HP)
+          </button>
+          <button id="slime-revive-btn" class="px-2.5 py-1 bg-indigo-500/20 hover:bg-indigo-500/30 active:scale-95 text-indigo-300 border border-indigo-500/30 rounded text-[9px] cursor-pointer font-semibold">
+            Reviver
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('slime-hit-btn').addEventListener('click', () => {
+      state.slimeHealth = Math.max(0, state.slimeHealth - 20);
+      document.getElementById('slime-hp-text').textContent = `${state.slimeHealth} / 100 HP`;
+      document.getElementById('slime-hp-fill').style.width = `${state.slimeHealth}%`;
+    });
+
+    document.getElementById('slime-revive-btn').addEventListener('click', () => {
+      state.slimeHealth = 100;
+      document.getElementById('slime-hp-text').textContent = `${state.slimeHealth} / 100 HP`;
+      document.getElementById('slime-hp-fill').style.width = `${state.slimeHealth}%`;
+    });
+
+  } else if (type === 'css-cursor') {
+    container.innerHTML = `
+      <div class="flex flex-col justify-between h-full">
+        <p class="text-[10px] text-slate-500 font-mono">// Passe o mouse para testar cursor</p>
+        <div class="bg-indigo-500/10 hover:bg-indigo-600/15 border border-dashed border-indigo-500/30 rounded p-4 text-center cursor-crosshair transition-all flex items-center justify-center flex-col h-24 my-1">
+          <i data-lucide="mouse-pointer" class="w-5 h-5 text-indigo-400 bounce-sprite mb-1"></i>
+          <span class="text-[10px] font-mono text-indigo-300 font-bold uppercase tracking-wider">CURSOR INTERATIVO ATIVO</span>
+          <span class="text-[8px] text-slate-500 mt-1">Simula área de mira customizada</span>
+        </div>
+      </div>
+    `;
+
+  } else if (type === 'shake') {
+    container.innerHTML = `
+      <div class="flex flex-col justify-between h-full w-full">
+        <p class="text-[10px] text-slate-500 font-mono">// Feedback Tremor de Câmera</p>
+        <div class="flex justify-center my-1.5">
+          <div id="shake-target-element" class="w-20 h-10 rounded bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">
+            ⚔️ Batalha
+          </div>
+        </div>
+        <button id="trigger-shake-btn" class="w-full py-1.5 bg-indigo-600 hover:bg-indigo-500 text-[10px] text-white rounded font-mono font-semibold tracking-wide active:scale-95 transition-all cursor-pointer">
+          Disparar Impacto (Impact)
+        </button>
+      </div>
+    `;
+
+    document.getElementById('trigger-shake-btn').addEventListener('click', () => {
+      const el = document.getElementById('shake-target-element');
+      el.classList.add('shake-active');
+      setTimeout(() => {
+        el.classList.remove('shake-active');
+      }, 800);
+    });
+
+  } else if (type === 'scanlines') {
+    container.innerHTML = `
+      <div class="flex flex-col justify-between h-full">
+        <div class="flex justify-between items-center">
+          <p class="text-[10px] text-slate-500 font-mono">// Filtro Scanlines Retro</p>
+          <button id="toggle-crt-effect-btn" class="px-2 py-0.5 bg-[#16161D] text-[8px] border border-white/10 rounded text-slate-300 font-mono">
+            ${state.crtActive ? 'Desativar CRT' : 'Ativar CRT'}
+          </button>
+        </div>
+        
+        <div class="relative flex-1 bg-gradient-to-br from-[#0A0A0B] via-[#121217] to-[#16161D] rounded border border-white/10 flex items-center justify-center overflow-hidden my-1">
+          <!-- CRT Overlay -->
+          <div id="crt-scanline-mesh" class="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay ${state.crtActive ? 'crt-scanlines' : ''}"></div>
+
+          <span id="crt-status-text" class="text-[11px] font-mono text-indigo-400 font-bold tracking-widest uppercase animate-pulse">
+            ${state.crtActive ? '🎮 RETRO-GLASS CRT' : 'Mundo Simples'}
+          </span>
+        </div>
+        <span class="text-[8px] text-slate-600 font-mono text-center">Scanline: mix-blend-overlay</span>
+      </div>
+    `;
+
+    document.getElementById('toggle-crt-effect-btn').addEventListener('click', () => {
+      state.crtActive = !state.crtActive;
+      const mesh = document.getElementById('crt-scanline-mesh');
+      const text = document.getElementById('crt-status-text');
+      const btn = document.getElementById('toggle-crt-effect-btn');
+      
+      if (state.crtActive) {
+        mesh.classList.add('crt-scanlines');
+        text.textContent = '🎮 RETRO-GLASS CRT';
+        btn.textContent = 'Desativar CRT';
+      } else {
+        mesh.classList.remove('crt-scanlines');
+        text.textContent = 'Mundo Simples';
+        btn.textContent = 'Ativar CRT';
+      }
+    });
+
+  } else if (type === 'lights') {
+    container.innerHTML = `
+      <div class="flex flex-col justify-between h-full">
+        <p class="text-[10px] text-slate-500 font-mono">// Lanternas Dinâmicas (Mova o Mouse)</p>
+        <div 
+          id="spotlight-track-area"
+          class="relative flex-1 bg-slate-950 rounded border border-white/10 overflow-hidden my-1 flex items-center justify-center cursor-none h-24"
+        >
+          <!-- Darkness radial cutout overlay -->
+          <div id="spotlight-radial-mask" class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 35px at 100px 50px, transparent 100%, rgba(5,5,10,0.95) 100%)"></div>
+          
+          <span class="text-[10px] text-indigo-455 font-mono font-bold">MONSTRO ESCONDIDO! 👹</span>
+        </div>
+      </div>
+    `;
+
+    const trackArea = document.getElementById('spotlight-track-area');
+    trackArea.addEventListener('mousemove', (e) => {
+      const rect = trackArea.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const mask = document.getElementById('spotlight-radial-mask');
+      if (mask) {
+        mask.style.background = `radial-gradient(circle 35px at ${x}px ${y}px, transparent 100%, rgba(5,5,10,0.95) 100%)`;
+      }
+    });
+
+  } else if (type === 'gameloop') {
+    container.innerHTML = `
+      <div class="flex flex-col justify-between h-full">
+        <p class="text-[10px] text-slate-500 font-mono">// Loop Contínuo Ativo</p>
+        <div class="bg-[#16161D] border border-white/10 p-2 rounded">
+          <div class="flex justify-between items-center text-[10px] font-mono">
+            <span class="text-indigo-400 font-bold">Estado: ATIVO</span>
+            <span id="gameloop-count-span">Contagem: ${state.gameLoopFrame}</span>
+          </div>
+          <div class="w-full bg-[#0A0A0B] rounded h-1 mt-1 relative overflow-hidden">
+            <div id="gameloop-progressbar-fill" class="absolute h-full w-4 bg-indigo-500 transition-all duration-75" style="left: ${state.gameLoopFrame}%"></div>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-2 justify-between">
+          <span class="text-[8px] text-slate-500">Aceleração de Frames:</span>
+          <div class="flex gap-1" id="gameloop-speeds-selector">
+            <button data-speed="1" class="px-1.5 py-0.5 rounded text-[8px] border cursor-pointer ${state.gameLoopSpeed === 1 ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-[#16161D] border-white/10 text-slate-400'}">1x</button>
+            <button data-speed="2" class="px-1.5 py-0.5 rounded text-[8px] border cursor-pointer ${state.gameLoopSpeed === 2 ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-[#16161D] border-white/10 text-slate-400'}">2x</button>
+            <button data-speed="4" class="px-1.5 py-0.5 rounded text-[8px] border cursor-pointer ${state.gameLoopSpeed === 4 ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-[#16161D] border-white/10 text-slate-400'}">4x</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const btnsNode = document.querySelectorAll('#gameloop-speeds-selector button');
+    btnsNode.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const speed = parseInt(e.target.dataset.speed, 10);
+        state.gameLoopSpeed = speed;
+        
+        // Redraw only buttons
+        btnsNode.forEach(b => {
+          const s = parseInt(b.dataset.speed, 10);
+          b.className = s === speed
+            ? 'px-1.5 py-0.5 rounded text-[8px] border cursor-pointer bg-indigo-600 text-white border-indigo-500'
+            : 'px-1.5 py-0.5 rounded text-[8px] border cursor-pointer bg-[#16161D] border-white/10 text-slate-400';
+        });
+      });
+    });
+
+  } else if (type === 'movement') {
+    container.innerHTML = `
+      <div class="flex flex-col justify-between h-full">
+        <p class="text-[10px] text-slate-500 font-mono">// Joystick / Teclas do Teclado</p>
+        
+        <div class="relative flex-1 bg-[#0A0A0B] rounded border border-white/10 overflow-hidden my-1" id="wizard-clipping-viewport">
+          <!-- Wizard element -->
+          <div id="wizard-actor" class="absolute text-base transition-all duration-100 ease-out" style="left: ${state.wizardPos.x}px; top: ${state.wizardPos.y}px">🧙‍♂️</div>
+
+          <div id="wizard-tutorial-alert" class="absolute inset-x-0 bottom-1 flex justify-center text-[8.5px] text-[#A5B4FC] font-mono animate-bounce text-center ${state.wizardHasMoved ? 'hidden' : ''}">
+            Use as setas do teclado (↑ ↓ ← →) nesta caixa!
+          </div>
+
+          <span id="wizard-coords" class="absolute right-2 top-1 text-[8px] text-slate-500 font-mono">
+            X: ${state.wizardPos.x} | Y: ${state.wizardPos.y}
+          </span>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <span class="text-[8px] text-slate-500">Mova com cliques:</span>
+          <div class="flex gap-1">
+            <button data-dir="L" class="jstick-btn w-5 h-5 bg-[#16161D] border border-white/10 hover:bg-[#202029] active:scale-90 select-none cursor-pointer rounded text-[10px] flex items-center justify-center font-bold text-indigo-400">←</button>
+            <button data-dir="U" class="jstick-btn w-5 h-5 bg-[#16161D] border border-white/10 hover:bg-[#202029] active:scale-90 select-none cursor-pointer rounded text-[10px] flex items-center justify-center font-bold text-indigo-400">↑</button>
+            <button data-dir="D" class="jstick-btn w-5 h-5 bg-[#16161D] border border-white/10 hover:bg-[#202029] active:scale-90 select-none cursor-pointer rounded text-[10px] flex items-center justify-center font-bold text-indigo-400">↓</button>
+            <button data-dir="R" class="jstick-btn w-5 h-5 bg-[#16161D] border border-white/10 hover:bg-[#202029] active:scale-90 select-none cursor-pointer rounded text-[10px] flex items-center justify-center font-bold text-indigo-400">→</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const moveWizard = (dir) => {
+      state.wizardHasMoved = true;
+      document.getElementById('wizard-tutorial-alert')?.classList.add('hidden');
+      const step = 20;
+
+      if (dir === 'L') state.wizardPos.x = Math.max(10, state.wizardPos.x - step);
+      if (dir === 'R') state.wizardPos.x = Math.min(265, state.wizardPos.x + step);
+      if (dir === 'U') state.wizardPos.y = Math.max(10, state.wizardPos.y - step);
+      if (dir === 'D') state.wizardPos.y = Math.min(130, state.wizardPos.y + step);
+
+      const actor = document.getElementById('wizard-actor');
+      const coords = document.getElementById('wizard-coords');
+      if (actor) {
+        actor.style.left = `${state.wizardPos.x}px`;
+        actor.style.top = `${state.wizardPos.y}px`;
+      }
+      if (coords) {
+        coords.textContent = `X: ${state.wizardPos.x} | Y: ${state.wizardPos.y}`;
+      }
+    };
+
+    document.querySelectorAll('.jstick-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const d = e.target.dataset.dir;
+        moveWizard(d);
+      });
+    });
+
+    // Handle standard keys while element is active
+    document.addEventListener('keydown', (e) => {
+      if (state.activeTab !== 'encyclopedia' || state.selectedLanguage !== 'js' || state.selectedDifficulty !== 'beginner') return;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        if (e.key === 'ArrowLeft') moveWizard('L');
+        if (e.key === 'ArrowRight') moveWizard('R');
+        if (e.key === 'ArrowUp') moveWizard('U');
+        if (e.key === 'ArrowDown') moveWizard('D');
+      }
+    });
+  }
+
+  if (window.lucide) window.lucide.createIcons();
+}
+
+// --- CREATOR FORM UTILITIES ---
+function syncCreatorTab() {
+  const isLesson = state.creatorTab === 'lesson';
+  const labelTimeXp = document.getElementById('creator-time-xp-label');
+  const labelDocHint = document.getElementById('creator-doc-hint-label');
+  const btnLesson = document.getElementById('toggle-creator-lesson');
+  const btnChall = document.getElementById('toggle-creator-challenge');
+
+  const titleInput = document.getElementById('creator-title-input');
+  const timexpInput = document.getElementById('creator-timexp-input');
+  const descInput = document.getElementById('creator-desc-input');
+  const codeInput = document.getElementById('creator-code-input');
+  const dochintInput = document.getElementById('creator-dochint-input');
+
+  if (isLesson) {
+    btnLesson.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer bg-white/10 text-indigo-400';
+    btnChall.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer text-slate-500';
+    labelTimeXp.textContent = 'Tempo Estimado (ex: "12 min"):';
+    timexpInput.placeholder = '12 min';
+    labelDocHint.textContent = 'Apostila Completa em Texto (html/markdown):';
+    dochintInput.placeholder = 'Detalhes aprofundados para o aluno ler...';
+  } else {
+    btnChall.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer bg-white/10 text-indigo-400';
+    btnLesson.className = 'flex-1 py-1.5 text-xs rounded font-mono font-medium cursor-pointer text-slate-500';
+    labelTimeXp.textContent = 'Recompensa (XP):';
+    timexpInput.placeholder = '300';
+    labelDocHint.textContent = 'Instruções para Resolução & Dicas:';
+    dochintInput.placeholder = 'O que o usuário deve escrever no editor?';
+  }
+  generateAndDisplayJSON();
+}
+
+function generateAndDisplayJSON() {
+  const isLesson = state.creatorTab === 'lesson';
+  const title = document.getElementById('creator-title-input').value;
+  const val = document.getElementById('creator-timexp-input').value;
+  const desc = document.getElementById('creator-desc-input').value;
+  const code = document.getElementById('creator-code-input').value;
+  const docHint = document.getElementById('creator-dochint-input').value;
+
+  if (isLesson) {
+    const obj = {
+      id: `custom-lesson-${Date.now()}`,
+      title: title || 'Novo Tópico de Exemplo',
+      shortDesc: desc || 'Breve introdução didática.',
+      difficulty: state.selectedDifficulty,
+      estimatedTime: val || '10 min',
+      icon: 'tv',
+      concept: 'Uso prático de novas estruturas decorativas.',
+      codeExample: code || '// código relevante de exemplo',
+      liveDemoConfig: { type: 'canvas', params: {} },
+      tutorialHTML: docHint || 'Passo a passo sobre o assunto detalhado...'
+    };
+    state.generatedJSON = JSON.stringify(obj, null, 2);
+  } else {
+    const obj = {
+      id: `custom-chall-${Date.now()}`,
+      title: title || 'Novo Desafio',
+      shortDesc: desc || 'Explicação do exercício.',
+      difficulty: state.selectedDifficulty,
+      category: state.selectedLanguage,
+      xpValue: parseInt(val, 10) || 120,
+      instructions: docHint || 'O que o usuário deve escrever no editor?',
+      initialCode: code || '<!-- Comece aqui -->',
+      expectedKeywords: ['canvas', 'id'],
+      hint: 'Sempre observe a caixa de tags abertas!'
+    };
+    state.generatedJSON = JSON.stringify(obj, null, 2);
+  }
+
+  document.getElementById('json-output').textContent = state.generatedJSON;
+}
+
+// --- INITIALIZATION ---
+function init() {
+  loadProgress();
+
+  // Bind Main Search Bar
+  const searchInput = document.getElementById('search-input');
+  searchInput.addEventListener('input', (e) => {
+    handleSearch(e.target.value);
+  });
+
+  const clearSearchBtn = document.getElementById('clear-search-btn');
+  clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    handleSearch('');
+  });
+
+  // Bind main navigation tabs
+  document.getElementById('tab-encyclopedia').onclick = () => selectMainTab('encyclopedia');
+  document.getElementById('tab-challenges').onclick = () => selectMainTab('challenges');
+
+  // Bind subtabs language selectors
+  ['html', 'css', 'js'].forEach(lang => {
+    document.getElementById(`subtab-${lang}`).onclick = () => selectLanguageTab(lang);
+  });
+
+  // Bind difficulty selectors
+  ['beginner', 'intermediate', 'advanced'].forEach(d => {
+    document.getElementById(`diff-btn-${d}`).onclick = () => selectDifficulty(d);
+  });
+
+  // Bind Content Creator Modal Triggers
+  const modal = document.getElementById('creator-modal');
+  document.getElementById('dev-export-btn').onclick = () => {
+    modal.classList.remove('hidden');
+    state.showCreator = true;
+    syncCreatorTab();
+  };
+
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    state.showCreator = false;
+  };
+  document.getElementById('close-creator-btn').onclick = closeModal;
+  document.getElementById('close-modal-footer-btn').onclick = closeModal;
+
+  // Toggles inside creator modal
+  document.getElementById('toggle-creator-lesson').onclick = () => {
+    state.creatorTab = 'lesson';
+    syncCreatorTab();
+  };
+  document.getElementById('toggle-creator-challenge').onclick = () => {
+    state.creatorTab = 'challenge';
+    syncCreatorTab();
+  };
+
+  // Generate output live in creator modal
+  document.getElementById('generate-json-btn').onclick = generateAndDisplayJSON;
+
+  // Copy JSON inside creator modal
+  document.getElementById('copy-json-btn').onclick = () => {
+    if (!state.generatedJSON) return;
+    navigator.clipboard.writeText(state.generatedJSON);
+    
+    const label = document.getElementById('copy-json-text');
+    label.textContent = 'Copiado!';
+    setTimeout(() => {
+      label.textContent = 'Copiar JSON';
+    }, 2000);
+  };
+
+  // Start continuous frame runner for looping demos
+  animationFrameId = requestAnimationFrame(runGameLoopTimer);
+
+  // Synced default structures render
+  syncDefaultActiveItems();
+  renderUI();
+}
+
+// Start application when DOM Content is loaded
+window.addEventListener('DOMContentLoaded', init);
