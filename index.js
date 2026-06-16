@@ -1253,7 +1253,8 @@ function init() {
   // Copy buttons on raw files modal
   const safeFetchAndCopy = async (filePath, buttonId, defaultLabel) => {
     try {
-      const resp = await fetch(filePath);
+      const absolutePath = new URL(filePath, import.meta.url).href;
+      const resp = await fetch(absolutePath);
       if (!resp.ok) throw new Error('Não foi possível carregar o arquivo');
       const text = await resp.text();
       await navigator.clipboard.writeText(text);
@@ -1280,6 +1281,18 @@ function init() {
   safeOnClick('copy-conteudos-btn', () => safeFetchAndCopy('./conteudos.js', 'copy-conteudos-btn', 'Copiar'));
   safeOnClick('copy-html-btn', () => safeFetchAndCopy('./index.html', 'copy-html-btn', 'Copiar'));
   safeOnClick('copy-css-btn', () => safeFetchAndCopy('./index.css', 'copy-css-btn', 'Copiar'));
+
+  // Dynamically map direct links of raw files modal using current meta context URL
+  const resolveHref = (id, filePath) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.href = new URL(filePath, import.meta.url).href;
+    }
+  };
+  resolveHref('raw-link-js', './index.js');
+  resolveHref('raw-link-conteudos', './conteudos.js');
+  resolveHref('raw-link-html', './index.html');
+  resolveHref('raw-link-css', './index.css');
 
   // Start continuous frame runner for looping demos
   animationFrameId = requestAnimationFrame(runGameLoopTimer);
