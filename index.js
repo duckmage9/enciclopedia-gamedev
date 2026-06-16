@@ -10,7 +10,7 @@ import { ENCYCLOPEDIA_DATA, CHALLENGE_DATA } from './conteudos.js';
 let state = {
   activeTab: 'encyclopedia', // 'encyclopedia' | 'challenges'
   selectedLanguage: 'html',  // 'html' | 'css' | 'js'
-  selectedDifficulty: 'beginner', // 'beginner' | 'intermediate' | 'advanced'
+  selectedDifficulty: 'all', // 'all' | 'beginner' | 'intermediate' | 'advanced'
   searchQuery: '',
   selectedLessonId: 'html-beg-canvas',
   selectedChallengeId: 'ch-html-canvas',
@@ -109,7 +109,7 @@ function getActiveChallenge() {
 function getFilteredLessons() {
   const rawList = ENCYCLOPEDIA_DATA[state.selectedLanguage] || [];
   return rawList.filter(item => {
-    const matchesDifficulty = item.difficulty === state.selectedDifficulty;
+    const matchesDifficulty = state.selectedDifficulty === 'all' || item.difficulty === state.selectedDifficulty;
     const matchesQuery = item.title.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
                           item.shortDesc.toLowerCase().includes(state.searchQuery.toLowerCase());
     return matchesDifficulty && matchesQuery;
@@ -119,7 +119,7 @@ function getFilteredLessons() {
 function getFilteredChallenges() {
   return CHALLENGE_DATA.filter(ch => {
     const matchesCategory = ch.category === state.selectedLanguage;
-    const matchesDifficulty = ch.difficulty === state.selectedDifficulty;
+    const matchesDifficulty = state.selectedDifficulty === 'all' || ch.difficulty === state.selectedDifficulty;
     const matchesQuery = ch.title.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
                           ch.shortDesc.toLowerCase().includes(state.searchQuery.toLowerCase());
     return matchesCategory && matchesDifficulty && matchesQuery;
@@ -291,7 +291,7 @@ function renderUI() {
   });
 
   // Render active difficulty select buttons
-  ['beginner', 'intermediate', 'advanced'].forEach(d => {
+  ['all', 'beginner', 'intermediate', 'advanced'].forEach(d => {
     const btn = document.getElementById(`diff-btn-${d}`);
     if (btn) {
       if (state.selectedDifficulty === d) {
@@ -305,7 +305,9 @@ function renderUI() {
   // Filter labels
   const langFilterEl = document.getElementById('label-lang-filter');
   if (langFilterEl) langFilterEl.textContent = state.selectedLanguage.toUpperCase();
-  const diffWord = state.selectedDifficulty === 'beginner' ? 'Iniciante' : state.selectedDifficulty === 'intermediate' ? 'Intermediário' : 'Avançado';
+  const diffWord = state.selectedDifficulty === 'all' ? 'Todos' :
+                   state.selectedDifficulty === 'beginner' ? 'Iniciante' :
+                   state.selectedDifficulty === 'intermediate' ? 'Intermediário' : 'Avançado';
   trySetText('label-diff-filter', diffWord);
 
   // Render Sidebar, Details sections
@@ -352,6 +354,13 @@ function renderListSidebar() {
           : 'bg-[#0F0F12]/60 border-white/5 hover:border-indigo-500/30 hover:bg-[#16161D]/50'
       }`;
 
+      // Styling difficulty badge classes
+      const badgeClass = item.difficulty === 'beginner' ? 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5' :
+                         item.difficulty === 'intermediate' ? 'text-amber-400 border-amber-500/20 bg-amber-500/5' :
+                         'text-rose-400 border-rose-500/20 bg-rose-500/5';
+      const badgeLabel = item.difficulty === 'beginner' ? 'Iniciante' :
+                         item.difficulty === 'intermediate' ? 'Intermediário' : 'Avançado';
+
       card.innerHTML = `
         <div class="absolute top-0 left-0 w-1.5 h-full transition-all ${isActive ? 'bg-indigo-500' : 'bg-transparent group-hover:bg-indigo-500/30'}"></div>
         <div class="flex items-start gap-3 pl-1.5">
@@ -364,9 +373,11 @@ function renderListSidebar() {
               ${isRead ? `<span class="flex items-center text-indigo-450 gap-0.5" title="Concluído"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i></span>` : ''}
             </div>
             <p class="text-xs text-slate-400 line-clamp-2 mt-1 font-mono">${item.shortDesc}</p>
-            <div class="flex gap-2.5 mt-2.5 text-[10px] font-mono text-slate-500">
+            <div class="flex flex-wrap items-center gap-2 mt-2.5 text-[10px] font-mono text-slate-500">
               <span>⏰ ${item.estimatedTime}</span>
+              <span>•</span>
               <span>🔥 +50 XP</span>
+              <span class="px-1.5 py-0.2 rounded border uppercase font-bold text-[8px] ${badgeClass}">${badgeLabel}</span>
             </div>
           </div>
         </div>
@@ -410,6 +421,13 @@ function renderListSidebar() {
           : 'bg-[#0F0F12]/60 border-white/5 hover:border-indigo-500/30 hover:bg-[#16161D]/50'
       }`;
 
+      // Styling difficulty badge classes
+      const badgeClass = chall.difficulty === 'beginner' ? 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5' :
+                         chall.difficulty === 'intermediate' ? 'text-amber-400 border-amber-500/20 bg-amber-500/5' :
+                         'text-rose-400 border-rose-500/20 bg-rose-500/5';
+      const badgeLabel = chall.difficulty === 'beginner' ? 'Iniciante' :
+                         chall.difficulty === 'intermediate' ? 'Intermediário' : 'Avançado';
+
       card.innerHTML = `
         <div class="absolute top-0 left-0 w-1.5 h-full transition-all ${isActive ? 'bg-indigo-500' : 'bg-transparent group-hover:bg-indigo-500/30'}"></div>
         <div class="flex items-start gap-3 pl-1.5">
@@ -422,8 +440,8 @@ function renderListSidebar() {
               ${isSolved ? `<span class="flex items-center text-indigo-400 gap-0.5 bg-indigo-950/45 border border-indigo-800/40 px-1.5 py-0.2 text-[8px] rounded font-mono uppercase font-bold">Aprovado</span>` : ''}
             </div>
             <p class="text-xs text-slate-400 line-clamp-2 mt-1 font-mono">${chall.shortDesc}</p>
-            <div class="flex justify-between items-center mt-2.5 text-[10px] font-mono text-slate-500">
-              <span>🏆 Desafio de Fixação</span>
+            <div class="flex items-center justify-between mt-2.5 text-[10px] font-mono text-slate-500 gap-2">
+              <span class="px-1.5 py-0.2 rounded border uppercase font-bold text-[8px] ${badgeClass}">${badgeLabel}</span>
               <span class="text-indigo-400 font-bold">+${chall.xpValue} XP</span>
             </div>
           </div>
@@ -1166,7 +1184,7 @@ function init() {
   });
 
   // Bind difficulty selectors
-  ['beginner', 'intermediate', 'advanced'].forEach(d => {
+  ['all', 'beginner', 'intermediate', 'advanced'].forEach(d => {
     safeOnClick(`diff-btn-${d}`, () => selectDifficulty(d));
   });
 
@@ -1215,6 +1233,53 @@ function init() {
       }, 2000);
     }
   });
+
+  // Bind Raw Files Modal Triggers
+  const rawModal = document.getElementById('raw-files-modal');
+  safeOnClick('raw-files-btn', () => {
+    if (rawModal) {
+      rawModal.classList.remove('hidden');
+    }
+  });
+
+  const closeRawModal = () => {
+    if (rawModal) {
+      rawModal.classList.add('hidden');
+    }
+  };
+  safeOnClick('close-raw-btn', closeRawModal);
+  safeOnClick('close-raw-footer-btn', closeRawModal);
+
+  // Copy buttons on raw files modal
+  const safeFetchAndCopy = async (filePath, buttonId, defaultLabel) => {
+    try {
+      const resp = await fetch(filePath);
+      if (!resp.ok) throw new Error('Não foi possível carregar o arquivo');
+      const text = await resp.text();
+      await navigator.clipboard.writeText(text);
+      const el = document.getElementById(buttonId);
+      if (el) {
+        el.textContent = 'Copiado!';
+        setTimeout(() => {
+          el.textContent = defaultLabel;
+        }, 1500);
+      }
+    } catch (err) {
+      console.error('Failed to copy file code: ', err);
+      const el = document.getElementById(buttonId);
+      if (el) {
+        el.textContent = 'Erro!';
+        setTimeout(() => {
+          el.textContent = defaultLabel;
+        }, 1500);
+      }
+    }
+  };
+
+  safeOnClick('copy-js-btn', () => safeFetchAndCopy('./index.js', 'copy-js-btn', 'Copiar'));
+  safeOnClick('copy-conteudos-btn', () => safeFetchAndCopy('./conteudos.js', 'copy-conteudos-btn', 'Copiar'));
+  safeOnClick('copy-html-btn', () => safeFetchAndCopy('./index.html', 'copy-html-btn', 'Copiar'));
+  safeOnClick('copy-css-btn', () => safeFetchAndCopy('./index.css', 'copy-css-btn', 'Copiar'));
 
   // Start continuous frame runner for looping demos
   animationFrameId = requestAnimationFrame(runGameLoopTimer);
