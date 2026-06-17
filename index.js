@@ -4,7 +4,8 @@
  */
 
 // --- DATASET: GameDEV Encyclopedia & Challenges ---
-import { ENCYCLOPEDIA_DATA, CHALLENGE_DATA } from './conteudos.js';
+const ENCYCLOPEDIA_DATA = window.ENCYCLOPEDIA_DATA;
+const CHALLENGE_DATA = window.CHALLENGE_DATA;
 
 // Precise, premium, game-centric examples replacement list for CSS and JS
 const CORRECT_CSS_EXAMPLES = {
