@@ -1706,5 +1706,3 @@ if (typeof window !== 'undefined') {
   window.ENCYCLOPEDIA_DATA = ENCYCLOPEDIA_DATA;
   window.CHALLENGE_DATA = CHALLENGE_DATA;
 }
-
-export { ENCYCLOPEDIA_DATA, CHALLENGE_DATA };
