@@ -624,22 +624,51 @@ function renderDetailPanel() {
           </p>
         </div>
 
-        <!-- Interactive Sandbox IDE Textarea inputs -->
-        <div class="flex flex-col gap-2">
-          <div class="flex justify-between items-center text-xs font-mono text-slate-400">
-            <span>🖥️ Editor Interativo do Aluno:</span>
-            <button id="clear-ide-btn" class="text-slate-500 hover:text-slate-300 flex items-center gap-1 cursor-pointer font-semibold">
-              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-              <span>Resetar Código</span>
-            </button>
+        <!-- Interactive Sandbox Area with Live Preview -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          
+          <!-- Editor Column (Left) -->
+          <div class="lg:col-span-7 flex flex-col gap-2">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span class="flex items-center gap-1">
+                <i data-lucide="terminal" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>🖥️ Editor Interativo do Aluno:</span>
+              </span>
+              <button id="clear-ide-btn" class="text-slate-500 hover:text-slate-300 flex items-center gap-1 cursor-pointer font-semibold">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Resetar Código</span>
+              </button>
+            </div>
+
+            <textarea
+              id="challenge-code-editor"
+              class="w-full h-36 bg-[#0A0A0B] p-4 rounded-lg border border-white/10 font-mono text-xs focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none leading-relaxed text-indigo-100"
+              placeholder="// Digite sua solução aqui..."
+            ></textarea>
+            <span class="text-[10px] text-slate-500 font-mono">Dica rápida: ${chall.hint || 'Estruture o HTML com cuidado e veja o resultado ao lado.'}</span>
           </div>
 
-          <textarea
-            id="challenge-code-editor"
-            class="w-full h-36 bg-[#0A0A0B] p-4 rounded-lg border border-white/10 font-mono text-xs focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none leading-relaxed text-indigo-100"
-            placeholder="// Digite sua solução aqui..."
-          ></textarea>
-          <span class="text-[10px] text-slate-500 font-mono">Dica rápida: ${chall.hint}</span>
+          <!-- Live Visualizer Column (Right) -->
+          <div class="lg:col-span-5 flex flex-col gap-2">
+            <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+              <span class="flex items-center gap-1.5">
+                <i data-lucide="eye" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>🧪 Engine de Visualização HUD (Preview):</span>
+              </span>
+              <span class="flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[9px] text-slate-500">Live Output</span>
+              </span>
+            </div>
+
+            <div class="w-full h-36 bg-[#0A0A0B] border border-white/10 rounded-lg p-3.5 overflow-auto relative flex flex-col justify-start">
+              <div id="live-challenge-preview" class="w-full text-slate-200 font-sans">
+                <!-- User's HTML/CSS/JS will render here in real-time -->
+              </div>
+            </div>
+            <span class="text-[8px] text-slate-600 font-mono text-right">Motor de Renderização HUD / HTML5</span>
+          </div>
+
         </div>
 
         <!-- Visual Validator Feedbacks container -->
@@ -667,8 +696,24 @@ function renderDetailPanel() {
     // Force bind current typed code
     const textarea = document.getElementById('challenge-code-editor');
     textarea.value = state.challengeCode || chall.initialCode;
+
+    // Live Output update logic
+    const previewBox = document.getElementById('live-challenge-preview');
+    const updatePreview = () => {
+      if (previewBox) {
+        let userVal = textarea.value;
+        if (!userVal || userVal.trim() === '') {
+          previewBox.innerHTML = '<span class="text-slate-600 italic text-xs font-mono">Digite seu código HTML à esquerda para ver a interface renderizada em tempo real...</span>';
+        } else {
+          // Render HTML safely
+          previewBox.innerHTML = userVal;
+        }
+      }
+    };
+
     textarea.addEventListener('input', (e) => {
       state.challengeCode = e.target.value;
+      updatePreview();
     });
 
     // Reset editor action
@@ -677,10 +722,14 @@ function renderDetailPanel() {
       textarea.value = chall.initialCode;
       state.challengeFeedback = null;
       document.getElementById('ide-feedback-box').innerHTML = '';
+      updatePreview();
     });
 
     // Execution check click binding
     document.getElementById('run-challenge-test-btn').addEventListener('click', runChallengeTests);
+
+    // Initial preview execution
+    updatePreview();
 
     // Retain feedback box display if exits
     drawChallengeFeedback();
@@ -730,13 +779,16 @@ function drawActiveWorkshopSimulator(config) {
   const p = config.params || {};
 
   if (type === 'canvas') {
+    const isHtml = (state.selectedLanguage === 'html');
+    const lesson = getActiveLesson();
+
     container.innerHTML = `
       <div class="flex flex-col justify-between h-full w-full">
-        <p class="text-[10px] text-slate-500 font-mono">// Canvas 2D renderizado</p>
-        <div class="border border-white/10 bg-[#16161D] rounded p-4 flex items-center justify-center relative flex-grow my-1">
-          <div id="canvas-subview-render"></div>
+        <p class="text-[10px] text-slate-500 font-mono">// ${isHtml ? 'Engine de Renderização de Interface' : 'Canvas 2D renderizado'}</p>
+        <div class="border border-white/10 bg-[#16161D] rounded p-4 flex items-center justify-center relative flex-grow my-1 overflow-auto max-h-[110px] w-full">
+          <div id="canvas-subview-render" class="w-full text-center"></div>
         </div>
-        <span class="text-[8px] text-slate-600 font-mono text-right">Render Context: 2D</span>
+        <span class="text-[8px] text-slate-600 font-mono text-right">${isHtml ? 'Preview Render (HTML5)' : 'Render Context: 2D'}</span>
       </div>
     `;
 
@@ -795,6 +847,8 @@ function drawActiveWorkshopSimulator(config) {
           </div>
         </div>
       `;
+    } else if (isHtml && lesson) {
+      sub.innerHTML = lesson.codeExample;
     } else {
       sub.innerHTML = `
         <span class="text-xs text-indigo-400 font-mono font-semibold">800x600 Pixels Pronto</span>
