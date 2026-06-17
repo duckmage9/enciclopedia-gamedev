@@ -72,3 +72,62 @@
     transform: translateY(-8px);
   }
 }
+
+/* Custom Gamedev box styling to make user HTML previews look magnificent */
+.gamedev-box {
+  background: rgba(15, 15, 18, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 12px;
+  color: #f1f5f9;
+  font-family: inherit;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  margin: 4px auto;
+  max-width: 100%;
+}
+
+.gamedev-box h2 {
+  font-size: 13px;
+  color: #818cf8;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Styling native preview form elements */
+#live-challenge-preview input,
+#live-challenge-preview select,
+#live-challenge-preview button,
+#canvas-subview-render input,
+#canvas-subview-render select,
+#canvas-subview-render button {
+  background: #0d0d11;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: #f1f5f9;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  transition: all 0.15s;
+  margin: 3px;
+}
+
+#live-challenge-preview button:hover,
+#canvas-subview-render button:hover {
+  background: #252530;
+  border-color: rgba(99, 102, 241, 0.6);
+  cursor: pointer;
+}
+
+#live-challenge-preview button:active,
+#canvas-subview-render button:active {
+  transform: scale(0.95);
+}
+
+#live-challenge-preview input[readonly],
+#canvas-subview-render input[readonly] {
+  background: #121217;
+  color: #818cf8;
+  border-color: rgba(99, 102, 241, 0.4);
+} 
