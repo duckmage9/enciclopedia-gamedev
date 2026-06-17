@@ -12,8 +12,8 @@ let state = {
   selectedLanguage: 'html',  // 'html' | 'css' | 'js'
   selectedDifficulty: 'all', // 'all' | 'beginner' | 'intermediate' | 'advanced'
   searchQuery: '',
-  selectedLessonId: 'html-beg-canvas',
-  selectedChallengeId: 'ch-html-canvas',
+  selectedLessonId: 'html-01',
+  selectedChallengeId: 'ch-html-01',
   
   // Game Stats Persistence
   visitedTutorials: [],
@@ -1253,7 +1253,7 @@ function init() {
   // Copy buttons on raw files modal
   const safeFetchAndCopy = async (filePath, buttonId, defaultLabel) => {
     try {
-      const absolutePath = new URL(filePath, import.meta.url).href;
+      const absolutePath = filePath;
       const resp = await fetch(absolutePath);
       if (!resp.ok) throw new Error('Não foi possível carregar o arquivo');
       const text = await resp.text();
@@ -1286,7 +1286,7 @@ function init() {
   const resolveHref = (id, filePath) => {
     const el = document.getElementById(id);
     if (el) {
-      el.href = new URL(filePath, import.meta.url).href;
+      el.href = filePath;
     }
   };
   resolveHref('raw-link-js', './index.js');
