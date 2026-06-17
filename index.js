@@ -847,11 +847,121 @@ function drawActiveWorkshopSimulator(config) {
           </div>
         </div>
       `;
-    } else if (isHtml && lesson) {
-      sub.innerHTML = lesson.codeExample;
+    } else if (lesson) {
+      if (state.selectedLanguage === 'html') {
+        const htmlContent = lesson.codeExample || '';
+        
+        if (htmlContent.includes('<img')) {
+          sub.innerHTML = `
+            <div class="flex flex-col items-center gap-1.5 p-1">
+              <div class="relative w-12 h-12 bg-indigo-500/10 border border-indigo-500/30 rounded-xl flex items-center justify-center animate-bounce">
+                <span class="text-2xl">👾</span>
+                <span class="absolute -bottom-1 -right-1 bg-emerald-500 text-[7px] text-white font-mono px-1 rounded border border-emerald-400 font-bold uppercase">PNG</span>
+              </div>
+              <span class="text-[9px] text-indigo-400 font-mono uppercase tracking-wide">Sprite Carregado (hero.png)</span>
+              <p class="text-[8px] text-slate-500 font-mono">Tag &lt;img&gt; renderizada com sucesso</p>
+            </div>
+          `;
+        } else if (htmlContent.includes('<audio') || htmlContent.includes('<video')) {
+          sub.innerHTML = `
+            <div class="flex flex-col items-center gap-2 bg-[#0F0F12] p-3 rounded-xl border border-white/10 w-48 shadow-lg">
+              <div class="flex items-center gap-2 w-full justify-between">
+                <span class="flex items-center gap-1 text-[9px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  BGM Player
+                </span>
+                <span class="text-[8px] text-slate-500 font-mono">0:24 / 2:15</span>
+              </div>
+              <div class="w-full bg-white/5 rounded-full h-1 relative overflow-hidden">
+                <div class="absolute inset-y-0 left-0 bg-emerald-400 rounded-full" style="width: 25%"></div>
+              </div>
+              <div class="flex gap-3 text-slate-400 text-xs">
+                <span class="cursor-pointer hover:text-indigo-405 text-[10px]">⏮</span>
+                <span class="cursor-pointer hover:text-indigo-405 text-indigo-400 font-bold text-[10px]">⏸</span>
+                <span class="cursor-pointer hover:text-indigo-405 text-[10px]">⏭</span>
+              </div>
+            </div>
+          `;
+        } else if (htmlContent.includes('<canvas')) {
+          sub.innerHTML = `
+            <div class="flex flex-col items-center gap-1.5 w-full max-w-[200px]">
+              <div class="w-full h-12 bg-[#050508] border border-dashed border-indigo-500/40 rounded flex items-center justify-center relative overflow-hidden">
+                <svg class="absolute inset-0 w-full h-full text-indigo-500/10" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" stroke-width="0.5"/>
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)"/>
+                  <circle cx="50%" cy="50%" r="20" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="2,2"/>
+                  <line x1="0" y1="50%" x2="100%" y2="50%" stroke="currentColor" stroke-width="0.5"/>
+                </svg>
+                <span class="text-[9px] text-indigo-400 font-bold font-mono tracking-widest animate-pulse z-10 uppercase">CANVAS RADAR ACTIVE</span>
+              </div>
+              <span class="text-[8px] text-slate-500 font-mono">Resolução Nativa: 800x600</span>
+            </div>
+          `;
+        } else {
+          sub.innerHTML = htmlContent;
+        }
+      } else if (state.selectedLanguage === 'css') {
+        const hasCustomSelector = lesson.codeExample.includes('.game-actor') || lesson.codeExample.includes('#') || lesson.codeExample.includes('body');
+        sub.innerHTML = `
+          <div class="flex flex-col items-center gap-1.5 p-1 w-full">
+            <style>
+              #canvas-subview-render .preview-css-host {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background: rgba(99, 102, 241, 0.03);
+                border: 1px dashed rgba(99, 102, 241, 0.2);
+                padding: 10px;
+                border-radius: 8px;
+                width: 100%;
+              }
+              #canvas-subview-render .game-actor-demo {
+                background: #4f46e5;
+                border: 1.5px solid #818cf8;
+                border-radius: 6px;
+                padding: 6px 12px;
+                font-size: 10px;
+                color: #ffffff;
+                font-family: 'JetBrains Mono', monospace;
+                font-weight: 700;
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+                transition: all 0.3s ease;
+              }
+              ${hasCustomSelector ? lesson.codeExample.replace(/\.game-actor(?!\w)/g, '#canvas-subview-render .game-actor-demo') : `#canvas-subview-render .game-actor-demo { ${lesson.codeExample} }`}
+            </style>
+            <div class="preview-css-host">
+              <div class="game-actor-demo game-actor flex items-center gap-2 animate-pulse">
+                <span>🛡️</span>
+                <span>GAME_BODY_HUD</span>
+              </div>
+            </div>
+            <span class="text-[8.5px] text-indigo-400 font-mono uppercase tracking-wider">Seletor CSS Ativo</span>
+          </div>
+        `;
+      } else {
+        sub.innerHTML = `
+          <div class="flex flex-col gap-1 w-full text-left">
+            <div class="bg-black/80 p-3 rounded-lg border border-white/10 font-mono text-[9px] leading-relaxed max-h-[85px] overflow-y-auto shadow-inner">
+              <div class="flex items-center justify-between text-indigo-400 border-b border-white/5 pb-1 mb-1 font-bold uppercase tracking-wider text-[8px]">
+                <span>🖥️ Compilador GameDEV V8</span>
+                <span class="text-emerald-400 animate-pulse">● EXEC_OK</span>
+              </div>
+              <span class="text-slate-500">> Inicializando modulo...</span><br>
+              <span class="text-[#A5B4FC]">> Executando script: <strong>${lesson.id}</strong></span><br>
+              <pre class="text-emerald-400 font-bold text-[8.5px] my-1 font-mono whitespace-pre-wrap">${lesson.codeExample}</pre>
+              <span class="text-amber-400 font-semibold">> console.log retorno: Compilado sem avisos</span>
+            </div>
+          </div>
+        `;
+      }
     } else {
       sub.innerHTML = `
-        <span class="text-xs text-indigo-400 font-mono font-semibold">800x600 Pixels Pronto</span>
+        <span class="text-xs text-indigo-400 font-mono font-semibold">Engine de Render pronta</span>
       `;
     }
 
@@ -1273,6 +1383,56 @@ function init() {
 
   // Generate output live in creator modal
   safeOnClick('generate-json-btn', generateAndDisplayJSON);
+
+  // Inject content directly inside the applet array
+  safeOnClick('inject-json-btn', () => {
+    generateAndDisplayJSON();
+    
+    if (!state.generatedJSON) {
+      alert('Por favor, preencha as informações antes de injetar!');
+      return;
+    }
+    
+    try {
+      const obj = JSON.parse(state.generatedJSON);
+      const isLesson = state.creatorTab === 'lesson';
+      
+      if (isLesson) {
+        if (!ENCYCLOPEDIA_DATA[state.selectedLanguage]) {
+          ENCYCLOPEDIA_DATA[state.selectedLanguage] = [];
+        }
+        ENCYCLOPEDIA_DATA[state.selectedLanguage].push(obj);
+        state.selectedLessonId = obj.id;
+        state.activeTab = 'encyclopedia';
+      } else {
+        // Prepare execution tests if missing
+        if (!obj.expectedKeywords) {
+          obj.expectedKeywords = [];
+        }
+        if (!obj.testRunner) {
+          obj.testRunner = (code) => {
+            if (code && code.trim() !== "") {
+              return { success: true, message: "Boa tentativa! Seu código simula bem a resposta do exercício!" };
+            }
+            return { success: false, message: "Insira algum código válido no editor para aprovação." };
+          };
+        }
+        CHALLENGE_DATA.push(obj);
+        state.selectedChallengeId = obj.id;
+        state.challengeCode = obj.initialCode || '';
+        state.challengeFeedback = null;
+        state.activeTab = 'challenges';
+      }
+      
+      alert(`Sucesso! ${isLesson ? 'Novo Tópico de Lição' : 'Novo Desafio Prático'} injetado no Applet em tempo de execução!\nEle foi selecionado e focado.`);
+      closeModal();
+      
+      // Update UI panels complete
+      renderUI();
+    } catch (e) {
+      alert('Erro ao analisar e injetar o bloco JSON: ' + e.message);
+    }
+  });
 
   // Copy JSON inside creator modal
   safeOnClick('copy-json-btn', () => {
