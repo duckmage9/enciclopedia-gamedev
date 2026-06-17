@@ -1577,7 +1577,7 @@ export const CHALLENGE_DATA = [
     difficulty: 'beginner',
     category: 'css',
     xpValue: 150,
-    instructions: `Dentro de uma classe CSS chamada `.area-jogo`, defina o cursor padrão para que aponte para um arquivo de imagem localizado em "mira.png" com fallback do navegador automático.`,
+    instructions: `Dentro de uma classe CSS chamada '.area-jogo', defina o cursor padrão para que aponte para um arquivo de imagem localizado em "mira.png" com fallback do navegador automático.`,
     initialCode: `.area-jogo {
   /* Escreva sua propriedade de cursor */
 }`,
@@ -1667,7 +1667,7 @@ export const CHALLENGE_DATA = [
     difficulty: 'intermediate',
     category: 'js',
     xpValue: 250,
-    instructions: `Completar o cálculo que avalia a borda direita de um retângulo. Se o objeto de jogo `player` possui uma coordenada horizontal `x` e largura `w`, como obtemos a coordenada exata da sua borda direita? Escreva a expressão matemática simples.`,
+    instructions: `Completar o cálculo que avalia a borda direita de um retângulo. Se o objeto de jogo \\\`player\\\` possui uma coordenada horizontal \\\`x\\\` e largura \\\`w\\\`, como obtemos a coordenada exata da sua borda direita? Escreva a expressão matemática simples.`,
     initialCode: `// Borda Direita = 
 `,
     expectedKeywords: ["x","+","w"],
