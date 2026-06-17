@@ -6,6 +6,89 @@
 // --- DATASET: GameDEV Encyclopedia & Challenges ---
 import { ENCYCLOPEDIA_DATA, CHALLENGE_DATA } from './conteudos.js';
 
+// Precise, premium, game-centric examples replacement list for CSS and JS
+const CORRECT_CSS_EXAMPLES = {
+  "css-01": `.player-sprite.active {\n  transform: scale(1.15);\n}\n\n.area-jogo > .inimigo-comum {\n  border: 1px solid #ef4444;\n}`,
+  "css-02": `.card-inventario {\n  width: 80px;\n  height: 80px;\n  padding: 8px;\n  border: 3px solid #ffd700;\n  margin: 12px;\n  box-sizing: border-box; /* Garante que borda e padding fiquem dentro do tamanho total! */\n}`,
+  "css-03": `.bioma-floresta {\n  background-color: #064e3b;\n  background-image: linear-gradient(135deg, #022c22 0%, #064e3b 100%);\n  background-repeat: no-repeat;\n  background-size: cover;\n}`,
+  "css-04": `.texto-dialogo-npc {\n  font-family: 'Inter', system-ui, sans-serif;\n  font-size: 14px;\n  font-weight: 500;\n  line-height: 1.6;\n  letter-spacing: 0.02em;\n  color: #f1f5f9;\n}`,
+  "css-05": `.hud-joystick-touch {\n  width: 5rem;\n  height: 5rem;\n  padding: 8px;\n  bottom: 2dvh;\n  left: 2dvw;\n}`,
+  "css-06": `.painel-stats {\n  display: flex; /* Cria um container flexível */\n}\n\n.item-escondido {\n  display: none; /* Some totalmente, liberando espaço no layout */\n}\n\n.bloco-largura-cheia {\n  display: block; /* Ocupa toda a largura disponível */\n}`,
+  "css-07": `.slot-equipamento {\n  border-width: 4px;\n  border-style: solid;\n  border-color: #818cf8;\n  border-radius: 12px;\n}`,
+  "css-08": `.efeito-aura-poder {\n  box-shadow: 0 0 15px 4px rgba(99, 102, 241, 0.75);\n  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.95);\n}`,
+  "css-09": `.opcao-menu:hover {\n  color: #fbbf24;\n  cursor: pointer;\n}\n\n.opcao-menu:active {\n  transform: scale(0.97);\n}`,
+  "css-10": `:root {\n  --cor-vida: #ef4444;\n  --cor-mana: #3b82f6;\n  --hud-padding: 12px;\n}\n\n.barra-energia {\n  background-color: var(--cor-mana);\n  padding: var(--hud-padding);\n}`,
+  "css-11": `.caixa-aviso-popup {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 999; /* Garante que ficará sobreposto a todo o cenário */\n}`,
+  "css-12": `.fila-botoes-hud {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n}`,
+  "css-13": `.grade-itens-loja {\n  display: flex;\n  flex-wrap: wrap;\n  align-content: flex-start;\n  gap: 10px;\n}`,
+  "css-14": `.arena-grade {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  grid-template-rows: auto;\n  gap: 8px;\n}`,
+  "css-15": `.barra-carregamento-hud::before {\n  content: 'Carregando...';\n  display: block;\n  color: #ffd700;\n  font-size: 8px;\n  text-align: center;\n}`,
+  "css-16": `.pontos-vida-indicador {\n  width: 100%;\n  transition-property: width, background-color;\n  transition-duration: 0.4s;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n}`,
+  "css-17": `.boss-girando-portal {\n  transform: rotate(45deg) scale(1.2) translate(10px, -50px);\n}`,
+  "css-18": `@media (max-width: 768px) {\n  .joystick-direcional-virtual {\n    display: grid; /* Somente aparece em telas menores (tablets/smartphones) */\n  }\n  .painel-lateral {\n    display: none;\n  }\n}`,
+  "css-19": `.missao-container:nth-child(even) {\n  background-color: rgba(255, 255, 255, 0.03);\n}\n\n.botoes-habilidade:not(.desbloqueado) {\n  filter: grayscale(1) opacity(0.5);\n}`,
+  "css-20": `.portal-dimensao {\n  filter: blur(1.5px) hue-rotate(180deg);\n  mix-blend-mode: color-dodge; /* Fusão perfeita com o fundo do jogo! */\n}`,
+  "css-21": `@keyframes flutuar {\n  0%, 100% { transform: translateY(0); }\n  50% { transform: translateY(-8px); }\n}\n\n.icone-moeda {\n  animation: flutuar 1.5s ease-in-out infinite;\n}`,
+  "css-22": `.cubo-3d-inventario {\n  transform-style: preserve-3d;\n  transform: perspective(600px) rotateX(15deg) rotateY(-20deg);\n}`,
+  "css-23": `.grade-layout-completo {\n  display: grid;\n  grid-template-areas:\n    "header header"\n    "sidebar main"\n    "footer footer";\n}\n\n.hud-centro {\n  grid-area: main;\n}`,
+  "css-24": `.minimapa-viewport {\n  width: calc(100% - 24px);\n  max-height: min(200px, 30vh);\n}`,
+  "css-25": `.mira-circular {\n  clip-path: circle(50% at 50% 50%);\n  background-color: #10b981;\n}`,
+  "css-26": `.painel-rolagem-quests {\n  scroll-snap-type: y mandatory;\n  overflow-y: scroll;\n  scroll-behavior: smooth;\n}\n\n.painel-rolagem-quests::-webkit-scrollbar {\n  width: 6px;\n  background: #020205;\n}`,
+  "css-27": `@container inventario (max-width: 320px) {\n  .texto-detalhe-item {\n    font-size: 8px; /* Reduz texto se o container de inventário for pequeno */\n  }\n}`,
+  "css-28": `/* Metodologia BEM (Block, Element, Modifier) */\n.cartao-boss {\n  background: #111;\n}\n.cartao-boss__titulo {\n  font-size: 16px;\n}\n.cartao-boss--fase-2 {\n  box-shadow: 0 0 30px #ef4444;\n}`,
+  "css-29": `.painel-dialogo-glass {\n  background: rgba(15, 23, 42, 0.45);\n  backdrop-filter: blur(8px);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 16px;\n}`,
+  "css-30": `.sprite-iluminado {\n  filter: drop-shadow(0 0 var(--brilho-fogo, 10px) var(--cor-magica, #e0f2fe));\n}`
+};
+
+const CORRECT_JS_EXAMPLES = {
+  "js-01": `// Alocando espaços de memória do jogo\nconst MULTIPLICADOR_XP = 1.5;\nlet pontosDeVida = 100;\nlet nomeJogador = "Arthur";\n\npontosDeVida -= 20; // Modificando o valor de 'let'\nconsole.log(nomeJogador + " tem " + pontosDeVida + " HP.");`,
+  "js-02": `// Diferentes tipos de dados do motor de jogo\nconst apelido = "FireMage"; // String\nconst danoBase = 45;       // Number (números inteiros ou decimais)\nconst vivo = true;         // Boolean (verdadeiro/falso)\nconst coordenadas = null;  // Null (vazio proposital)\nlet statusAlterado;        // Undefined (não inicializado)`,
+  "js-03": `// Cálculos e comparações no combate\nlet manaTotal = 150;\nlet custoMagia = 40;\nlet temManaSuficiente = manaTotal >= custoMagia;\nlet bonusDano = (10 + 5) * 2; // Expressão matemática priorizando soma`,
+  "js-04": `// Tomando caminhos de acordo com as ações\nlet heroiVida = 75;\n\nif (heroiVida <= 0) {\n  console.log("Derrotado! Retornando ao Spawn...");\n} else if (heroiVida < 30) {\n  console.log("Alerta! Ativar efeito visual de batimento cardíaco lento.");\n} else {\n  console.log("Pronto para combates continuados.");\n}`,
+  "js-05": `// Executando ações iterativas (como preencher inventários)\nfor (let i = 0; i < 5; i++) {\n  console.log("Criando inimigo " + i);\n}\n\nlet vidaBoss = 100;\nwhile (vidaBoss > 0) {\n  vidaBoss -= 25; // Loop decrescente controlado\n}`,
+  "js-06": `// Isolando e reaproveitando blocos funcionais\nfunction calcularDanoFinal(ataque, defesa) {\n  const resultado = ataque - (defesa * 0.5);\n  return Math.max(1, resultado); /* Retorna sempre no mínimo 1 de dano */\n}\n\nconst danoAplicado = calcularDanoFinal(80, 20);\nconsole.log(danoAplicado);`,
+  "js-07": `// Gerenciando múltiplos itens em sequência\nlet itensDoBaú = ["Espada Rara", "Poção de Vida", "Elmo de Bronze"];\n\nitensDoBaú.push("Escudo de Titânio"); // Insere no final\nitensDoBaú.unshift("Anel Mágico");    // Insere no início\nitensDoBaú.splice(2, 1);             // Remove o item no índice 2`,
+  "js-08": `// Representando entidades em um único objeto de dados\nconst bossDragao = {\n  nome: "Ignis o Vermelho",\n  hp: 2500,\n  coordenadas: { x: 1250, y: 350 },\n  soltarFogo: function() {\n    console.log("CHAMAS INTENSAS!");\n  }\n};\n\nbossDragao.soltarFogo();`,
+  "js-09": `// Vinculando a lógica JavaScript com o HTML visual\nconst barraVidaEl = document.getElementById("barra-vida-visual");\nif (barraVidaEl) {\n  barraVidaEl.style.width = "40%"; // Altera largura dinamicamente!\n  barraVidaEl.textContent = "40/100 HP";\n}`,
+  "js-10": `// Capturando teclas e cliques do jogador\nwindow.addEventListener("keydown", (event) => {\n  if (event.code === "Space") {\n    triggerPuloJogador();\n  }\n});\n\nconst comprarBtn = document.getElementById("btn-comprar");\ncomprarBtn.addEventListener("click", () => {\n  console.log("Item adquirido!");\n});`,
+  "js-11": `// O ciclo contínuo e sincronizado de frames\nfunction atualizarEPintarJogo() {\n  atualizarPosicoesFisicas();\n  desenharCenarioNoCanvas();\n  \n  requestAnimationFrame(atualizarEPintarJogo); /* Próxima atualização de quadro física */\n}\nrequestAnimationFrame(atualizarEPintarJogo);`,
+  "js-12": `// Sincronizando velocidade independentemente dos FPS do hardware\nlet lastTime = 0;\nfunction frameRun(timestamp) {\n  const deltaTime = (timestamp - lastTime) / 1000; // Tempo gasto em segundos\n  lastTime = timestamp;\n  \n  player.x += velocidadeMetrosPorSegundo * deltaTime;\n  requestAnimationFrame(frameRun);\n}`,
+  "js-13": `// Moldes para instanciar múltiplos inimigos rapidamente\nclass Projetil {\n  constructor(posX, posY, velocidadeX) {\n    this.x = posX;\n    this.y = posY;\n    this.vx = velocidadeX;\n  }\n  atualizar() {\n    this.x += this.vx;\n  }\n}\n\nconst bala = new Projetil(10, 50, 8);`,
+  "js-14": `// Simulando constante gravitacional física acelerada\nlet posY = 100;\nlet velY = 0;\nconst GRAVIDADE = 0.5;\n\nfunction tickFisica() {\n  velY += GRAVIDADE; // Aceleração constante descendo\n  posY += velY;\n  if (posY >= 400) { // Chão do jogo\n    posY = 400;\n    velY = 0;\n  }\n}`,
+  "js-15": `// Detecção de contato de sobreposição retangular\nfunction checkAABB(ret1, ret2) {\n  return (\n    ret1.x < ret2.x + ret2.width &&\n    ret1.x + ret1.width > ret2.x &&\n    ret1.y < ret2.y + ret2.height &&\n    ret1.y + ret1.height > ret2.y\n  );\n}`,
+  "js-16": `// Fatiamento de imagens em blocos de quadros (frames)\nfunction desenharSpriteFrame(ctx, imagem, frameAtual) {\n  const frameLargura = 64;\n  const frameAltura = 64;\n  const xNaSplitesheet = frameAtual * frameLargura;\n  \n  // drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)\n  ctx.drawImage(imagem, xNaSplitesheet, 0, frameLargura, frameAltura, playerX, playerY, 64, 64);\n}`,
+  "js-17": `// Máquina de estados para organizar comportamentos do personagem\nconst PERSONAGEM_ESTADOS = {\n  PARADO: "idle",\n  CORRENDO: "run",\n  BATENDO: "attack"\n};\nlet estadoAtual = PERSONAGEM_ESTADOS.PARADO;\n\nfunction receberComando(tecla) {\n  if (tecla === "ArrowRight") estadoAtual = PERSONAGEM_ESTADOS.CORRENDO;\n}`,
+  "js-18": `// Vetores matemáticos direcionais para locomoção diagonal justa\nclass Vector2D {\n  constructor(x, y) {\n    this.x = x;\n    this.y = y;\n  }\n  normalizar() {\n    const comprimento = Math.hypot(this.x, this.y) || 1;\n    this.x /= comprimento;\n    this.y /= comprimento;\n  }\n}`,
+  "js-19": `// Filtrando e coletando grupos de elementos da arena\nlet poolInimigos = [\n  { nome: "Orc", hp: 140 },\n  { nome: "Slime", hp: 0 },\n  { nome: "Goblin", hp: 45 }\n];\n\n// Filtra para remover inimigos mortos (hp <= 0)\nconst inimigosAtivos = poolInimigos.filter(inimigo => inimigo.hp > 0);`,
+  "js-20": `// Modulando escopos de código isolados\n// em 'physics.js':\nexport function aplicarGravidade(velY) {\n  return velY + 0.98;\n}\n\n// em 'main.js':\nimport { aplicarGravidade } from './physics.js';\nlet velocidadeQueda = aplicarGravidade(2.0);`,
+  "js-21": `// Registrando o momento em que ações de rede finalizam\nfunction carregarDadosJogador(callback) {\n  setTimeout(() => {\n    const dados = { classe: "Guerreiro", ouro: 500 };\n    callback(dados);\n  }, 1000);\n}\n\ncarregarDadosJogador((info) => {\n  console.log("Ouro do jogador: " + info.ouro);\n});`,
+  "js-22": `// Promessas assíncronas para carregamentos de assets pesados\nconst carregarSpritesheet = new Promise((resolve, reject) => {\n  const img = new Image();\n  img.onload = () => resolve(img);\n  img.onerror = () => reject("Erro ao ler arquivo spritesheet.png");\n  img.src = "spritesheet.png";\n});\n\ncarregarSpritesheet\n  .then(img => console.log("Carregado!"))\n  .catch(error => console.error(error));`,
+  "js-23": `// Escrevendo chamadas assíncronas com legibilidade procedural\nasync function carregarFasesOnline() {\n  try {\n    const response = await fetch("https://api.gamedevacademia.com/mapas");\n    const mapasJson = await response.json();\n    renderizarMapas(mapasJson);\n  } catch (error) {\n    console.error("Erro na leitura remota das fases: " + error);\n  }\n}`,
+  "js-24": `// Percorrendo árvores de dados do jogo de forma autorreferente\nfunction encontrarItemNoBauRecursivo(bau, nomeItem) {\n  for (let node of bau) {\n    if (node.nome === nomeItem) return node;\n    if (node.tipo === "sub-bau") { \n      return encontrarItemNoBauRecursivo(node.conteudo, nomeItem);\n    }\n  }\n  return null;\n}`,
+  "js-25": `// Técnicas de clonagem profunda para evitar bugs colaterais de referência\nconst atributosBase = { hp: 100, for: 15, equips: ["espada"] };\n\n// Clona completamente desvinculando instâncias de matriz na memória\nconst jogadorInstanciado = JSON.parse(JSON.stringify(atributosBase));\njogadorInstanciado.hp = 120;\njogadorInstanciado.equips.push("anel"); // Não modifica o original!`,
+  "js-26": `// Métodos de conexão externa (como resgatas pontuações globais do servidor)\nfetch("https://api.gamedev.com/leaderboard")\n  .then(resposta => resposta.json())\n  .then(listaDePlacares => {\n    exibirPlacarFormatado(listaDePlacares);\n  });`,
+  "js-27": `// Operações bit-a-bit ultra rápidos de agrupamento e checagem de colisor\nconst GRUPO_HEROI = 1 << 0;  // 0001\nconst GRUPO_PORTAL = 1 << 1; // 0010\nconst GRUPO_PAREDE = 1 << 2; // 0100\n\nlet mapaFiltroColisoes = GRUPO_HEROI | GRUPO_PAREDE; // 0101`,
+  "js-28": `// Varredura cirúrgica de comandos digitados no chat do jogo\nconst comandoValidador = /^\\/cheat\\s+([a-zA-Z]+)\\s+(\\d+)$/;\n\nconst comandoDigitado = "/cheat dinheiros 99999";\nconst match = comandoDigitado.match(comandoValidador);\nif (match) {\n  console.log("Cheat ativado: " + match[1] + " Qtd: " + match[2]);\n}`,
+  "js-29": `// Desalocando coleções de arrays para manter o jogo leve e livre de leak\nfunction destruirSalaVirtual() {\n  inimigosAtivosNaTela.forEach(inimigo => {\n    inimigo.dispose(); /* Libera listeners e texturas */\n  });\n  inimigosAtivosNaTela.length = 0; // Zera a lista explícita\n}`,
+  "js-30": `// Singleton para o de Gerenciador de Sons Central da Engine\nclass SomManager {\n  static getInstance() {\n    if (!this.instancia) {\n      this.instancia = new SomManager();\n    }\n    return this.instancia;\n  }\n  tocarAudio(somId) {\n    console.log("Play: " + somId);\n  }\n}`
+};
+
+// Apply correct, realistic gameDEV codeExamples dynamically
+if (ENCYCLOPEDIA_DATA.css) {
+  ENCYCLOPEDIA_DATA.css.forEach(lesson => {
+    if (CORRECT_CSS_EXAMPLES[lesson.id]) {
+      lesson.codeExample = CORRECT_CSS_EXAMPLES[lesson.id];
+    }
+  });
+}
+if (ENCYCLOPEDIA_DATA.js) {
+  ENCYCLOPEDIA_DATA.js.forEach(lesson => {
+    if (CORRECT_JS_EXAMPLES[lesson.id]) {
+      lesson.codeExample = CORRECT_JS_EXAMPLES[lesson.id];
+    }
+  });
+}
+
 // --- CORE APP STATE ---
 let state = {
   activeTab: 'encyclopedia', // 'encyclopedia' | 'challenges'
@@ -44,6 +127,48 @@ let state = {
   creatorDocHint: '',
   generatedJSON: ''
 };
+
+// --- IFRAME-SAFE TOAST NOTIFICATION SYSTEM ---
+function showToast(message, type = 'info') {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'fixed bottom-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none';
+    document.body.appendChild(container);
+  }
+  
+  const toast = document.createElement('div');
+  const bgClass = type === 'success' ? 'bg-emerald-950/95 border-emerald-500/40 text-emerald-300 shadow-emerald-500/10' :
+                  type === 'error' ? 'bg-rose-950/95 border-rose-500/40 text-rose-300 shadow-rose-500/10' :
+                  'bg-[#0F0F12]/95 border-white/10 text-indigo-300 shadow-indigo-500/5';
+  
+  const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-octagon' : 'info';
+  
+  toast.className = `p-3.5 rounded-xl border ${bgClass} shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto backdrop-blur-md`;
+  toast.innerHTML = `
+    <i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i>
+    <span class="text-xs font-mono font-medium">${message}</span>
+  `;
+  container.appendChild(toast);
+  
+  if (window.lucide) window.lucide.createIcons();
+  
+  // Transition in
+  setTimeout(() => {
+    toast.classList.remove('translate-y-2', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+  }, 10);
+  
+  // Transition out
+  setTimeout(() => {
+    toast.classList.remove('translate-y-0', 'opacity-100');
+    toast.classList.add('translate-y-2', 'opacity-0');
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, 4000);
+}
 
 // --- SYNC PROGRESS LOGIC ---
 function loadProgress() {
@@ -577,7 +702,7 @@ function renderDetailPanel() {
     const copyBtn = document.getElementById('copy-boilerplate-btn');
     copyBtn.addEventListener('click', () => {
       navigator.clipboard.writeText(lesson.codeExample);
-      alert('Código boilerplate copiado!');
+      showToast('Código boilerplate copiado para a área de transferência!', 'success');
     });
 
     // Populate the Interactive Live Simulator Sub-viewport
@@ -700,13 +825,166 @@ function renderDetailPanel() {
     // Live Output update logic
     const previewBox = document.getElementById('live-challenge-preview');
     const updatePreview = () => {
-      if (previewBox) {
-        let userVal = textarea.value;
-        if (!userVal || userVal.trim() === '') {
-          previewBox.innerHTML = '<span class="text-slate-600 italic text-xs font-mono">Digite seu código HTML à esquerda para ver a interface renderizada em tempo real...</span>';
+      if (!previewBox) return;
+      const userVal = textarea.value;
+      
+      if (!userVal || userVal.trim() === '') {
+        const langMsg = state.selectedLanguage === 'html' ? 'HTML' : state.selectedLanguage === 'css' ? 'CSS' : 'JavaScript';
+        previewBox.innerHTML = `<span class="text-slate-600 italic text-xs font-mono">Digite seu código ${langMsg} à esquerda para ver a renderização em tempo real...</span>`;
+        return;
+      }
+      
+      if (state.selectedLanguage === 'html') {
+        previewBox.innerHTML = userVal;
+      } else if (state.selectedLanguage === 'css') {
+        if (chall.id === 'ch-css-pointer') {
+          previewBox.innerHTML = `
+            <style>
+              ${userVal}
+            </style>
+            <div class="area-jogo w-full h-24 bg-indigo-500/10 border border-dashed border-indigo-500/30 rounded-lg flex flex-col items-center justify-center p-2 text-center cursor-pointer transition-all hover:bg-indigo-500/20">
+              <span class="text-2xl animate-pulse">🎯</span>
+              <p class="text-[9px] text-indigo-400 font-mono font-bold mt-1.5 uppercase">Área do Jogo (.area-jogo)</p>
+              <p class="text-[8px] text-slate-500 font-mono mt-0.5">Passe o mouse aqui para testar o seu cursor!</p>
+            </div>
+          `;
+        } else if (chall.id === 'ch-css-step') {
+          const isSteps8 = userVal.includes('steps(8)');
+          previewBox.innerHTML = `
+            <style>
+              ${userVal}
+            </style>
+            <div class="flex flex-col items-center justify-center gap-2 p-2">
+              <div class="w-12 h-12 bg-indigo-500/10 border border-slate-700 rounded-lg flex items-center justify-center relative overflow-hidden">
+                <div class="sprite-personagem text-2xl" style="animation: walk 1s infinite ${isSteps8 ? 'steps(8)' : 'linear'};">🏃</div>
+              </div>
+              <style>
+                @keyframes walk {
+                  0% { transform: scale(1) translateX(-10px); }
+                  50% { transform: scale(1.1) translateX(10px); }
+                  100% { transform: scale(1) translateX(-10px); }
+                }
+              </style>
+              <p class="text-[9px] text-indigo-400 font-mono font-bold uppercase">Sprite Animada (.sprite-personagem)</p>
+              <p class="text-[8px] font-mono ${isSteps8 ? 'text-emerald-400' : 'text-amber-400'}">
+                ${isSteps8 ? '✓ Usando steps(8) discretos (fatiamento perfeito!)' : '⏳ Movimento contínuo. Use steps(8)'}
+              </p>
+            </div>
+          `;
+        } else if (chall.id === 'ch-css-crt') {
+          const hasMixBlend = userVal.toLowerCase().includes('mix-blend-mode');
+          let chosenMode = 'normal';
+          const match = userVal.toLowerCase().match(/mix-blend-mode\s*:\s*([a-z\-]+)/);
+          if (match && match[1]) {
+            chosenMode = match[1];
+          }
+          previewBox.innerHTML = `
+            <div class="relative w-full h-24 bg-[#0a0a0c] border border-slate-800 rounded-lg overflow-hidden flex flex-col justify-between p-3">
+              <div class="game-screen-mock flex flex-col justify-between h-full z-10">
+                <span class="text-[10px] text-emerald-400 font-mono font-bold uppercase flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
+                  GALAXY_COMMANDER_V1
+                </span>
+                <span class="text-xs text-white font-bold ml-4">HP: 100/100</span>
+              </div>
+              <div class="crt-overlay absolute inset-0 z-20 pointer-events-none opacity-80" style="background: repeating-linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%), repeating-linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05)); background-size: 100% 3px, 5px 100%; mix-blend-mode: ${chosenMode};"></div>
+            </div>
+            <p class="text-[9px] font-mono text-center text-indigo-400 font-bold mt-1.5 uppercase">CRT Overlay (.crt-overlay)</p>
+            <p class="text-[8px] text-slate-500 font-mono text-center mt-0.5">${hasMixBlend ? `Modo de mistura ativo: <span class="text-emerald-400 font-bold font-mono">${chosenMode}</span>` : 'Faltando mix-blend-mode para mesclar do CRT'}</p>
+          `;
         } else {
-          // Render HTML safely
-          previewBox.innerHTML = userVal;
+          previewBox.innerHTML = `
+            <style>
+              ${userVal}
+            </style>
+            <div class="flex items-center gap-2 p-2 justify-center bg-[#050508] border border-white/5 rounded">
+              <div class="game-actor p-2 bg-indigo-600 border border-indigo-400 text-white rounded text-[10px] font-mono font-bold animate-pulse">
+                <span>🛡️ .game-actor</span>
+              </div>
+            </div>
+            <span class="text-[8px] text-slate-500 font-mono block text-center mt-1">Estilos CSS injetados</span>
+          `;
+        }
+      } else if (state.selectedLanguage === 'js') {
+        if (chall.id === 'ch-js-loop') {
+          const hasAnimation = userVal.toLowerCase().includes('requestanimationframe');
+          const hasLoop = userVal.toLowerCase().includes('gameloop');
+          
+          previewBox.innerHTML = `
+            <div class="flex flex-col items-center justify-center gap-2 p-2">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full ${hasAnimation && hasLoop ? 'bg-emerald-500 animate-ping' : 'bg-rose-500'}"></span>
+                <span class="text-[10px] font-bold font-mono text-slate-350 uppercase">
+                  ${hasAnimation && hasLoop ? 'LOOP PRINCIPAL ALIMENTADO' : 'LOOP PARADO / OFFLINE'}
+                </span>
+              </div>
+              <div class="font-mono text-[8px] text-slate-400 bg-[#060608] px-2.5 py-1 rounded border border-white/5 w-full text-center">
+                ${hasAnimation && hasLoop 
+                  ? '<span class="text-emerald-400 font-bold animate-pulse">> Ticker @ 60 FPS Ativo (requestAnimationFrame)</span>' 
+                  : '> Aguardando chamada recursiva de gameLoop...'}
+              </div>
+            </div>
+          `;
+        } else if (chall.id === 'ch-js-aabb') {
+          const clean = userVal.toLowerCase().replace(/\s+/g, '');
+          const correctMath = clean.includes('player.x+player.w') || clean.includes('x+w') || clean.includes('player.x+w') || (clean.includes('x') && clean.includes('+') && clean.includes('w'));
+          
+          previewBox.innerHTML = `
+            <div class="flex flex-col items-center justify-center p-2">
+              <div class="relative w-full h-12 bg-black/60 border border-slate-800 rounded flex items-center justify-center">
+                <div class="absolute left-4 top-2 bottom-2 w-16 bg-indigo-500/20 border border-indigo-500/40 rounded flex items-center justify-center p-1 text-[8px] text-indigo-300 font-mono">
+                  x: 16 (w: 64)
+                </div>
+                ${correctMath ? `
+                  <div class="absolute left-20 bottom-1 top-1 w-0.5 bg-emerald-400 animate-pulse flex items-center">
+                    <span class="text-[7px] text-emerald-400 font-mono font-bold bg-[#0A0A0B]/90 border border-emerald-500/30 px-1 rounded -translate-y-5 -translate-x-1/2 whitespace-nowrap">Borda Direita = 80! (OK)</span>
+                  </div>
+                ` : ''}
+              </div>
+              <p class="text-[9px] font-mono mt-1.5 text-indigo-400 uppercase font-bold">Simulador de Box Model AABB</p>
+              <p class="text-[8px] text-slate-500 font-mono text-center mt-0.5">
+                ${correctMath ? '✓ Borda direita calculada de forma perfeita!' : 'Pratique a fórmula acima para revelar a borda direita...'}
+              </p>
+            </div>
+          `;
+        } else if (chall.id === 'ch-js-lerp') {
+          const isCorrect = userVal.toLowerCase().replace(/\s+/g, '').includes('playerx-camerax') && userVal.toLowerCase().includes('0.1');
+          
+          previewBox.innerHTML = `
+            <div class="flex flex-col items-center justify-center p-2 w-full">
+              <div class="relative w-full h-12 bg-[#050508] border border-slate-800 rounded overflow-hidden">
+                <div class="absolute left-1/4 top-1/2 -translate-y-1/2 w-3 h-3 bg-indigo-500 rounded-full flex items-center justify-center text-[7px]" style="animation: slide 3s infinite ease-in-out;">👾</div>
+                <!-- Camera dot following target -->
+                <div class="absolute left-1/4 top-1/2 -translate-y-1/2 w-5 h-5 border border-dashed ${isCorrect ? 'border-emerald-400 animate-pulse' : 'border-rose-400'} rounded-lg" style="animation: ${isCorrect ? 'slide-smooth 3s infinite ease-in-out' : 'slide 3s infinite ease-in-out'};"></div>
+              </div>
+              <style>
+                @keyframes slide {
+                  0%, 100% { left: 10%; }
+                  50% { left: 80%; }
+                }
+                @keyframes slide-smooth {
+                  0%, 100% { left: 15%; } /* simulated lerp lag */
+                  25% { left: 35%; }
+                  50% { left: 75%; }
+                  75% { left: 55%; }
+                }
+              </style>
+              <p class="text-[9px] font-mono mt-1.5 text-indigo-400 uppercase font-bold">Simulação de Câmera LERP</p>
+              <p class="text-[8px] text-slate-500 font-mono text-center mt-0.5">
+                ${isCorrect ? '✓ Câmera cinemática deslizando suavemente!' : 'Digite a fórmula correta de atualização do LERP...'}
+              </p>
+            </div>
+          `;
+        } else {
+          previewBox.innerHTML = `
+            <div class="bg-black/90 p-3 rounded border border-white/5 font-mono text-[9px] text-[#A5B4FC] leading-relaxed w-full">
+              <div class="flex items-center justify-between text-indigo-400 border-b border-white/5 pb-1 mb-1 font-bold">
+                <span>🖥️ Interpretador Sandbox Javascript</span>
+                <span class="text-emerald-400 animate-pulse">● EXEC_LIVE</span>
+              </div>
+              <pre class="text-indigo-200 mt-1 font-mono whitespace-pre-wrap">${userVal}</pre>
+            </div>
+          `;
         }
       }
     };
@@ -822,7 +1100,7 @@ function drawActiveWorkshopSimulator(config) {
         </div>
       `;
       document.getElementById('trigger-sound-inline-btn').addEventListener('click', () => {
-        alert('Bip! Executando trigger de som e efeito sonoro nativo...');
+        showToast('Bip! Executando trigger de som e efeito sonoro nativo... 🔊', 'info');
       });
     } else if (p.offscreenText) {
       sub.innerHTML = `
@@ -1389,7 +1667,7 @@ function init() {
     generateAndDisplayJSON();
     
     if (!state.generatedJSON) {
-      alert('Por favor, preencha as informações antes de injetar!');
+      showToast('Por favor, preencha as informações antes de injetar!', 'error');
       return;
     }
     
@@ -1424,13 +1702,13 @@ function init() {
         state.activeTab = 'challenges';
       }
       
-      alert(`Sucesso! ${isLesson ? 'Novo Tópico de Lição' : 'Novo Desafio Prático'} injetado no Applet em tempo de execução!\nEle foi selecionado e focado.`);
+      showToast(`Sucesso! ${isLesson ? 'Novo Tópico' : 'Novo Desafio'} injetado em tempo de execução!`, 'success');
       closeModal();
       
       // Update UI panels complete
       renderUI();
     } catch (e) {
-      alert('Erro ao analisar e injetar o bloco JSON: ' + e.message);
+      showToast('Erro ao analisar/injetar o bloco JSON: ' + e.message, 'error');
     }
   });
 
