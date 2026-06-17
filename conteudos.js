@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const ENCYCLOPEDIA_DATA = {
+const ENCYCLOPEDIA_DATA = {
   "html": [
     {
       "id": "html-01",
@@ -1376,7 +1376,7 @@ export const ENCYCLOPEDIA_DATA = {
   ]
 };
 
-export const CHALLENGE_DATA = [
+const CHALLENGE_DATA = [
   {
     id: 'ch-html-01',
     title: 'Desafio 1: Conceito de Tags',
@@ -1701,3 +1701,10 @@ export const CHALLENGE_DATA = [
     hint: ''
   }
 ];
+
+if (typeof window !== 'undefined') {
+  window.ENCYCLOPEDIA_DATA = ENCYCLOPEDIA_DATA;
+  window.CHALLENGE_DATA = CHALLENGE_DATA;
+}
+
+export { ENCYCLOPEDIA_DATA, CHALLENGE_DATA };
